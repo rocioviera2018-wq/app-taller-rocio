@@ -177,7 +177,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </nav>
 </div>
 
-<!-- PLANTILLA OCULTA PARA IMÁGENES -->
 <div id="receiptTemplate" style="position: absolute; left: -9999px; top: 0; width: 400px; background: #ffffff; padding: 20px; font-family: system-ui, sans-serif; color: #000;">
   <div id="receiptContent"></div>
 </div>
@@ -254,11 +253,19 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mPres')">Cancelar</button><button class="btn-save" style="background:var(--purple); color:#fff" onclick="addPres()">Guardar Presupuesto</button></div>
 </div></div>
 
+<!-- MODAL VENTAS CON DATOS DEL CLIENTE -->
 <div id="mVent" class="modal"><div class="modal-cnt">
   <h3>Nueva Venta</h3>
-  <input type="text" id="vProd" placeholder="Producto / Accesorio">
+  
+  <label style="font-size:11px;color:var(--sub)">Datos del Cliente</label>
+  <input type="text" id="vNom" placeholder="Nombre del Cliente" list="listaClientes" required>
+  <input type="tel" id="vTel" placeholder="Teléfono (Opcional)">
+  
+  <label style="font-size:11px;color:var(--sub)">Detalles del Producto</label>
+  <input type="text" id="vProd" placeholder="Producto / Accesorio (Ej: Funda iPhone)">
   <input type="number" id="vPrec" placeholder="Precio">
   <input type="date" id="vFecha">
+  
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mVent')">Cancelar</button><button class="btn-save" onclick="addVenta()">Guardar Venta</button></div>
 </div></div>
 
@@ -408,7 +415,7 @@ window.openModal = function(id, editId = null){
   }
   if(id === 'mVent') {
     document.getElementById('vFecha').valueAsDate = new Date();
-    ['vProd','vPrec'].forEach(i => document.getElementById(i).value = '');
+    ['vNom','vTel','vProd','vPrec'].forEach(i => document.getElementById(i).value = '');
   }
   document.getElementById(id).classList.add('active'); 
 }
@@ -543,6 +550,42 @@ window.addPres = async function() {
   closeModal('mPres'); cargarDatos();
 }
 
+// LÓGICA DE GUARDAR VENTA CON CLIENTE AUTOMÁTICO
+window.addVenta = async function() {
+  const nom = document.getElementById('vNom').value.trim();
+  const tel = document.getElementById('vTel').value.trim();
+  const prod = document.getElementById('vProd').value.trim();
+  const prec = parseFloat(document.getElementById('vPrec').value);
+  
+  if(!nom || !prod || !prec) return alert('Completa cliente, producto y precio');
+  
+  try {
+    // 1. Buscar o crear cliente
+    let clienteId = null;
+    let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
+    
+    if(clienteExistente) {
+      clienteId = clienteExistente.id;
+    } else {
+      const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: tel, uid });
+      clienteId = docRef.id;
+    }
+
+    // 2. Guardar venta
+    await addDoc(collection(db, 'ventas'), { 
+      producto: prod, 
+      precio: prec, 
+      fecha: document.getElementById('vFecha').value, 
+      cli: clienteId,
+      nombreCli: nom,
+      telCli: tel,
+      uid 
+    });
+    
+    closeModal('mVent'); cargarDatos();
+  } catch(e) { alert("Error al guardar venta: " + e.message); }
+}
+
 window.deleteOrd = async function(id) {
   if(confirm('¿Seguro que quieres borrar esta orden?')) {
     await deleteDoc(doc(db, 'ordenes', id));
@@ -557,12 +600,11 @@ window.deletePres = async function(id) {
   }
 }
 
-window.addVenta = async function() {
-  const p = document.getElementById('vProd').value.trim();
-  const pr = parseFloat(document.getElementById('vPrec').value);
-  if(!p || !pr) return alert('Complete producto y precio');
-  await addDoc(collection(db, 'ventas'), { producto: p, precio: pr, fecha: document.getElementById('vFecha').value, uid });
-  closeModal('mVent'); cargarDatos();
+window.deleteVenta = async function(id) {
+  if(confirm('¿Seguro que quieres borrar esta venta?')) {
+    await deleteDoc(doc(db, 'ventas', id));
+    cargarDatos();
+  }
 }
 
 window.cambiarEstado = async function(id, nuevoEstado) {
@@ -719,37 +761,37 @@ window.enviarImagen = async function(id) {
   }
 }
 
-// IMPRIMIR PRESUPUESTO
-window.imprimirPresupuesto = function(id) {
-  const p = D.presupuestos.find(x => x.id === id);
-  if(!p) return;
+// NUEVAS FUNCIONES PARA FACTURA DE VENTA
+window.imprimirFacturaVenta = function(id) {
+  const v = D.ventas.find(x => x.id === id);
+  if(!v) return;
   
   const win = window.open('', '_blank');
   const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:8px;">` : '';
   
-  let fechaFormat = p.fecha || '';
+  let fechaFormat = v.fecha || '';
   if(fechaFormat) {
-    const parts = fechaFormat.split('T')[0].split('-');
+    const parts = fechaFormat.split('-');
     if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
   
   win.document.write(`
-    <html><head><title>Presupuesto - ${D.config.local}</title>
+    <html><head><title>Factura - ${D.config.local}</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
       body { font-family: 'Inter', sans-serif; padding: 40px; color: #333; line-height: 1.5; }
-      .header { text-align: center; border-bottom: 3px solid #A855F7; padding-bottom: 20px; margin-bottom: 20px; }
+      .header { text-align: center; border-bottom: 3px solid #10B981; padding-bottom: 20px; margin-bottom: 20px; }
       .header h1 { color: #111; margin: 10px 0 5px; font-size: 28px; letter-spacing: -0.5px; }
       .header p { color: #666; font-size: 14px; margin: 2px 0; }
-      .section-title { font-size: 14px; text-transform: uppercase; color: #A855F7; font-weight: 700; margin: 25px 0 10px; letter-spacing: 1px; }
+      .section-title { font-size: 14px; text-transform: uppercase; color: #10B981; font-weight: 700; margin: 25px 0 10px; letter-spacing: 1px; }
       .details { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
       .row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0; font-size: 14px; }
       .row:last-child { border-bottom: none; padding-bottom: 0; }
       .row strong { color: #111; }
       .total-section { margin-top: 20px; background: #111; color: #fff; padding: 20px; border-radius: 12px; text-align: right; }
       .total-section h3 { margin: 0; font-size: 14px; color: #aaa; text-transform: uppercase; }
-      .total-section h2 { margin: 5px 0 0; font-size: 32px; color: #A855F7; }
-      .legal { font-size: 12px; color: #64748b; text-align: center; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+      .total-section h2 { margin: 5px 0 0; font-size: 32px; color: #10B981; }
+      .legal { font-size: 11px; color: #64748b; text-align: justify; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
       @media print { button { display: none; } body { padding: 0; } }
     </style>
     </head><body>
@@ -758,102 +800,90 @@ window.imprimirPresupuesto = function(id) {
         <h1>${D.config.local}</h1>
         <p>📍 ${D.config.dir || 'Dirección no registrada'}</p>
         <p>📱 WhatsApp: ${D.config.tel || 'Teléfono no registrado'}</p>
-        <h2 style="color:#A855F7; margin-top:15px; font-size:20px;">PRESUPUESTO</h2>
+        <h2 style="color:#10B981; margin-top:15px; font-size:20px;">FACTURA DE VENTA</h2>
       </div>
 
-      <div class="section-title">Detalles del Presupuesto</div>
+      <div class="section-title">Detalles de la Venta</div>
       <div class="details">
         <div class="row"><strong>Fecha:</strong> <span>${fechaFormat}</span></div>
-        <div class="row"><strong>Cliente:</strong> <span>${p.nombre}</span></div>
-        <div class="row"><strong>Equipo / Servicio:</strong> <span>${p.equipo}</span></div>
-        <div class="row"><strong>Detalles:</strong> <span>${p.detalles || '-'}</span></div>
-        <div class="row"><strong>Tipo de Entrega:</strong> <span>${p.tipoEnvio}</span></div>
+        <div class="row"><strong>Cliente:</strong> <span>${v.nombreCli || 'Consumidor Final'}</span></div>
+        <div class="row"><strong>Teléfono:</strong> <span>${v.telCli || '-'}</span></div>
+        <div class="row"><strong>Producto:</strong> <span>${v.producto}</span></div>
       </div>
 
       <div class="total-section">
-        <h3>Total Presupuestado</h3>
-        <h2>$${p.total}</h2>
-        ${p.costoEnvio > 0 ? `<p style="font-size:12px; color:#aaa; margin-top:5px;">(Incluye $${p.costoEnvio} de envío)</p>` : ''}
+        <h3>Total de la Venta</h3>
+        <h2>$${v.precio}</h2>
       </div>
 
       <div class="legal">
-        <strong>Este documento es un presupuesto, no un comprobante de pago.</strong><br>
-        Los precios están sujetos a cambios sin previo aviso hasta la aprobación del cliente.
+        <strong>¡Gracias por tu compra!</strong> Los accesorios tienen 7 días de garantía por falla de fábrica. Presentá esta factura para cualquier reclamo.
       </div>
 
       <div style="text-align:center; margin-top:30px;">
-        <button onclick="window.print()" style="padding:14px 28px; background:#A855F7; color:#000; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Imprimir / Guardar PDF</button>
+        <button onclick="window.print()" style="padding:14px 28px; background:#10B981; color:#fff; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Imprimir / Guardar PDF</button>
       </div>
     </body></html>
   `);
   win.document.close();
 }
 
-// NUEVA FUNCIÓN: ENVIAR PRESUPUESTO COMO IMAGEN
-window.enviarPresupuestoImg = async function(id) {
-  const p = D.presupuestos.find(x => x.id === id);
-  if(!p) return;
+window.enviarFacturaVentaImg = async function(id) {
+  const v = D.ventas.find(x => x.id === id);
+  if(!v) return;
   
-  let fechaFormat = p.fecha || '';
+  let fechaFormat = v.fecha || '';
   if(fechaFormat) {
-    const parts = fechaFormat.split('T')[0].split('-');
+    const parts = fechaFormat.split('-');
     if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
   
   const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:100px; margin-bottom:10px; border-radius:8px;">` : '';
   
-  // Llenar la plantilla oculta con diseño violeta para presupuestos
   document.getElementById('receiptContent').innerHTML = `
-    <div style="text-align:center; border-bottom: 3px solid #A855F7; padding-bottom: 15px; margin-bottom: 15px;">
+    <div style="text-align:center; border-bottom: 3px solid #10B981; padding-bottom: 15px; margin-bottom: 15px;">
       ${logoHtml}
       <h1 style="margin:0; font-size:22px; color:#111;">${D.config.local}</h1>
       <p style="margin:2px 0; font-size:12px; color:#666;">📍 ${D.config.dir || ''}</p>
       <p style="margin:2px 0; font-size:12px; color:#666;">📱 WhatsApp: ${D.config.tel || ''}</p>
-      <h2 style="color:#A855F7; margin-top:10px; font-size:16px;">PRESUPUESTO</h2>
+      <h2 style="color:#10B981; margin-top:10px; font-size:16px;">FACTURA DE VENTA</h2>
     </div>
     
     <div style="background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; font-size:13px; color:#333; margin-bottom:15px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Fecha:</strong> <span>${fechaFormat}</span></div>
-      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Cliente:</strong> <span>${p.nombre}</span></div>
-      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Equipo/Servicio:</strong> <span>${p.equipo}</span></div>
-      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Detalles:</strong> <span>${p.detalles || '-'}</span></div>
-      <div style="display:flex; justify-content:space-between;"><strong>Entrega:</strong> <span>${p.tipoEnvio}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Cliente:</strong> <span>${v.nombreCli || 'Consumidor Final'}</span></div>
+      <div style="display:flex; justify-content:space-between;"><strong>Producto:</strong> <span>${v.producto}</span></div>
     </div>
 
     <div style="background:#111; color:#fff; padding:15px; border-radius:10px; text-align:right; margin-bottom:15px;">
-      <div style="font-size:12px; color:#aaa; text-transform:uppercase;">Total Presupuestado</div>
-      <div style="font-size:26px; font-weight:bold; color:#A855F7;">$${p.total}</div>
-      ${p.costoEnvio > 0 ? `<div style="font-size:12px; color:#aaa; margin-top:5px;">Incluye envío: $${p.costoEnvio}</div>` : ''}
+      <div style="font-size:12px; color:#aaa; text-transform:uppercase;">Total de la Venta</div>
+      <div style="font-size:26px; font-weight:bold; color:#10B981;">$${v.precio}</div>
     </div>
 
     <div style="font-size:9px; color:#666; text-align:justify; border-top:1px solid #e2e8f0; padding-top:10px;">
-      <strong>Nota:</strong> Este es un presupuesto informativo. Los precios están sujetos a cambios hasta la aprobación del cliente.
+      <strong>¡Gracias por tu compra!</strong> Los accesorios tienen 7 días de garantía por falla de fábrica. Presentá este comprobante para cualquier reclamo.
     </div>
   `;
 
-  // Generar la imagen
   const element = document.getElementById('receiptTemplate');
   const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff' });
   
-  // Convertir a imagen y descargar
   const image = canvas.toDataURL("image/png");
   const link = document.createElement('a');
   link.href = image;
-  link.download = `Presupuesto_${p.equipo}_${p.nombre}.png`;
+  link.download = `Factura_${v.producto}_${v.nombreCli || 'Cliente'}.png`;
   link.click();
 
-  // Abrir WhatsApp si tiene teléfono
-  if(p.telefono) {
-    const msj = encodeURIComponent(`Hola ${p.nombre}, te envío el presupuesto por ${p.equipo}. ¡Saludos de ${D.config.local}!`);
+  if(v.telCli) {
+    const msj = encodeURIComponent(`Hola ${v.nombreCli}, te envío la factura por la compra de ${v.producto}. ¡Saludos de ${D.config.local}!`);
     setTimeout(() => {
-      window.open(`https://wa.me/${p.telefono.replace(/\D/g,'')}?text=${msj}`, '_blank');
+      window.open(`https://wa.me/${v.telCli.replace(/\D/g,'')}?text=${msj}`, '_blank');
     }, 800);
     alert('¡Imagen descargada! Se abrirá WhatsApp para que adjuntes la imagen.');
   } else {
-    alert('Imagen descargada. (No guardaste un teléfono para este cliente, así que no se abrió WhatsApp).');
+    alert('Imagen descargada. (El cliente no tiene teléfono guardado para abrir WhatsApp)');
   }
 }
-
 
 function render() {
   if(!uid) return;
@@ -944,7 +974,6 @@ function render() {
   }
   document.getElementById('listOrd').innerHTML = h;
 
-  // RENDER PRESUPUESTOS CON EL NUEVO BOTÓN ENVIAR IMG
   h = ''; D.presupuestos.forEach(p => {
     h += `<div class="card">
       <div class="card-head"><span class="card-title">${p.equipo}</span><span class="badge bg-presupuesto">Presupuesto</span></div>
@@ -960,10 +989,22 @@ function render() {
   });
   document.getElementById('listPres').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay presupuestos</p>';
   
+  // RENDER VENTAS CON CLIENTE Y BOTONES
   let totalV = 0;
   h = ''; D.ventas.forEach(v => {
     totalV += v.precio;
-    h += `<div class="card"><div class="card-head"><span class="card-title">${v.producto}</span></div><div style="display:flex; justify-content:space-between; font-size:13px; color:var(--sub);"><span>📅 ${v.fecha}</span><span style="color:var(--ok); font-weight:bold;">$${v.precio}</span></div></div>`;
+    h += `<div class="card">
+      <div class="card-head"><span class="card-title">${v.producto}</span></div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${v.nombreCli || 'Consumidor Final'}</div>
+      <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--sub); margin-bottom:10px;">
+        <span>📅 ${v.fecha}</span><span style="color:var(--ok); font-weight:bold;">$${v.precio}</span>
+      </div>
+      <div style="display:flex; gap:8px; border-top:1px solid var(--bor); padding-top:15px; flex-wrap:wrap;">
+        <button class="btn-pdf" onclick="imprimirFacturaVenta('${v.id}')">🖨️ Factura</button>
+        <button class="btn-img" onclick="enviarFacturaVentaImg('${v.id}')">📲 Enviar Img</button>
+        <button class="btn-del" onclick="deleteVenta('${v.id}')">Borrar</button>
+      </div>
+    </div>`;
   });
   document.getElementById('listVentas').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay ventas registradas</p>';
   document.getElementById('totalVentas').textContent = '$' + totalV;
