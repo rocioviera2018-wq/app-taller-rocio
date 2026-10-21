@@ -3,172 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TechPro Manager</title>
+<title>TechPro PRO</title>
 <style>
-:root { --bg: #09090B; --card: #18181B; --text: #FAFAFA; --sub: #A1A1AA; --prim: #E11D48; --acc: #06B6D4; --bor: #27272A; }
-[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --acc: #DC2626; --bor: #E2E8F0; }
-[data-theme="claro-turquesa"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --acc: #0D9488; --bor: #E2E8F0; }
+:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; }
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);padding-bottom:80px;transition:0.3s}
-.header{background:var(--card);padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bor)}
-.btn-main{background:var(--prim);color:#FFF;border:none;padding:10px 18px;border-radius:10px;font-weight:600;cursor:pointer;font-size:14px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;justify-content:space-around;padding:12px 0 20px 0;border-top:1px solid var(--bor);z-index:100}
-.nav-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;font-size:20px;color:var(--sub);cursor:pointer;flex:1}
-.nav-btn span{font-size:10px;margin-top:4px;font-weight:600}
-.nav-btn.active{color:var(--acc)}
-.view{display:none;padding:20px 16px;max-width:700px;margin:0 auto}
+body{background:var(--bg);color:var(--text);padding-bottom:80px}
+.header{padding:16px;display:flex;justify-content:space-between;align-items:center}
+.user-info{display:flex;gap:12px;align-items:center}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--card);border:2px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:20px}
+.greeting h2{font-size:16px;font-weight:700}
+.greeting p{font-size:11px;color:var(--sub)}
+.icon-btn{background:var(--card);border:1px solid var(--bor);color:var(--text);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 16px;margin-bottom:20px}
+.stat-box{background:var(--card);padding:12px;border-radius:12px;border:1px solid var(--bor);text-align:center}
+.stat-val{font-size:18px;font-weight:700;color:var(--neon);text-shadow:0 0 10px rgba(0,229,255,0.3)}
+.stat-lab{font-size:10px;color:var(--sub);margin-top:4px}
+
+.grid-menu{display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;padding:0 16px;margin-bottom:24px}
+.menu-item{background:var(--card);border:1px solid var(--bor);border-radius:12px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.menu-item i{font-size:22px}
+.menu-item span{font-size:10px;color:var(--sub);font-weight:600}
+.menu-item.active{border-color:var(--neon);box-shadow:0 0 10px rgba(0,229,255,0.1)}
+.menu-item.active span{color:var(--neon)}
+
+.alert-box{background:rgba(255,42,85,0.1);border:1px solid rgba(255,42,85,0.3);border-radius:12px;padding:12px;margin:0 16px 20px;display:flex;align-items:center;gap:10px}
+.alert-box i{color:var(--prim);font-size:20px}
+.alert-box p{font-size:12px;color:var(--prim);font-weight:600}
+
+.section-title{font-size:14px;color:var(--sub);padding:0 16px;margin-bottom:10px;font-weight:600;display:flex;justify-content:space-between}
+.section-title a{color:var(--neon);text-decoration:none;font-size:12px}
+
+.card{background:var(--card);margin:0 16px 10px;padding:14px;border-radius:12px;border:1px solid var(--bor)}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.card-title{font-weight:600;font-size:14px}
+.badge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+.bg-pend{background:rgba(255,42,85,0.15);color:var(--prim)}
+.bg-ok{background:rgba(0,229,255,0.15);color:var(--neon)}
+.card-desc{font-size:12px;color:var(--sub);margin-bottom:4px}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:10px 0 20px;z-index:100}
+.nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:20px;gap:4px;cursor:pointer;flex:1}
+.nav-btn span{font-size:10px;font-weight:600}
+.nav-btn.active{color:var(--neon)}
+
+.view{display:none;padding-top:10px}
 .view.active{display:block}
-.card{background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--bor);margin-bottom:12px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:flex-end;justify-content:center}
+.btn-main{background:var(--prim);color:#FFF;border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;box-shadow:0 0 15px rgba(255,42,85,0.4)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
-.modal-content{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0}
-.modal-content input, .modal-content select {width:100%;padding:14px;border:1px solid var(--bor);border-radius:10px;margin:8px 0 16px;background:var(--bg);color:var(--text)}
-.modal-btns{display:flex;gap:12px;margin-top:10px}
-.btn-cancel{background:transparent;color:var(--sub);border:1px solid var(--bor);padding:12px;border-radius:10px;flex:1}
-.theme-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.theme-opt{padding:10px;border-radius:8px;border:2px solid var(--bor);cursor:pointer;text-align:center;font-size:11px;font-weight:600}
+.modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:1px solid var(--neon)}
+.modal-cnt h3{margin-bottom:15px;font-size:18px;color:var(--neon)}
+.modal-cnt input, .modal-cnt select {width:100%;padding:12px;border:1px solid var(--bor);border-radius:8px;margin-bottom:12px;background:var(--bg);color:#FFF;font-size:14px}
+.modal-btns{display:flex;gap:10px;margin-top:10px}
+.btn-cancel{background:transparent;color:var(--sub);border:1px solid var(--bor);padding:12px;border-radius:8px;flex:1}
+.btn-save{background:var(--neon);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700;box-shadow:0 0 15px rgba(0,229,255,0.4)}
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div style="display:flex;gap:12px;align-items:center">
-    <img id="logoHeader" style="width:42px;height:42px;border-radius:10px;object-fit:cover;display:none">
-    <div id="logoPh" style="width:42px;height:42px;background:var(--bg);border:1px solid var(--bor);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">🔧</div>
-    <div><h1 id="nombreLocal" style="font-size:16px">Mi Taller</h1><small id="nombreTec" style="font-size:11px;color:var(--sub)">Técnico</small></div>
-  </div>
-</header>
-
-<nav class="bottom-nav">
-  <button class="nav-btn active" onclick="nav('dash', this)">📊<span>Inicio</span></button>
-  <button class="nav-btn" onclick="nav('cli', this)">👥<span>Clientes</span></button>
-  <button class="nav-btn" onclick="nav('ord', this)">📋<span>Órdenes</span></button>
-  <button class="nav-btn" onclick="nav('ajus', this)">⚙️<span>Ajustes</span></button>
-</nav>
-
-<main id="view-dash" class="view active"><h2>Bienvenida 👋</h2><div class="card" style="margin-top:20px"><h3>Ingresos Hoy</h3><p style="font-size:24px;color:var(--prim)">$0</p></div></main>
-
-<main id="view-cli" class="view">
-  <div style="display:flex;justify-content:space-between;margin-bottom:20px"><h2>Clientes</h2><button class="btn-main" onclick="modal('mCli')">+ Nuevo</button></div>
-  <div id="listaCli"></div>
-</main>
-
-<main id="view-ord" class="view">
-  <div style="display:flex;justify-content:space-between;margin-bottom:20px"><h2>Órdenes</h2><button class="btn-main" onclick="modal('mOrd')">+ Nueva</button></div>
-  <div id="listaOrd"></div>
-</main>
-
-<main id="view-ajus" class="view">
-  <h2>⚙️ Ajustes</h2>
-  <div class="card" style="margin-top:20px">
-    <label>Nombre Local<input type="text" id="inNegocio"></label>
-    <label>WhatsApp<input type="tel" id="inTel"></label>
-    <label>Logo (Galería)<input type="file" id="inLogo" accept="image/*" onchange="subirLogo(event)"></label>
-    <img id="prevLogo" style="max-width:100px;border-radius:10px;margin-top:10px;display:none">
-    <button class="btn-main" style="margin-top:15px;width:100%" onclick="guardarAjustes()">Guardar Ajustes</button>
-  </div>
-  <div class="card">
-    <h3>Tema de Colores</h3>
-    <div class="theme-grid">
-      <div class="theme-opt" onclick="setTema('oscuro-rojo')">Negro/Rojo</div>
-      <div class="theme-opt" onclick="setTema('claro-rojo')">Blanco/Rojo</div>
-      <div class="theme-opt" onclick="setTema('claro-turquesa')">Blanco/Turquesa</div>
+<div class="header">
+  <div class="user-info">
+    <div class="avatar" id="logoBox">🔧</div>
+    <div class="greeting">
+      <h2 id="hLocal">Mi Taller</h2>
+      <p id="hTec">Hola, Técnico</p>
     </div>
   </div>
+  <button class="icon-btn" onclick="wa()">💬</button>
+</div>
+
+<main id="view-inicio" class="view active">
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="sIng">$0</div><div class="stat-lab">Ingresos Hoy</div></div>
+    <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Activas</div></div>
+    <div class="stat-box"><div class="stat-val" id="sCli">0</div><div class="stat-lab">Clientes</div></div>
+  </div>
+
+  <div class="grid-menu">
+    <div class="menu-item active" onclick="nav('inicio', this)"><i>🏠</i><span>Inicio</span></div>
+    <div class="menu-item" onclick="nav('clientes', this)"><i>👥</i><span>Clientes</span></div>
+    <div class="menu-item" onclick="nav('ordenes', this)"><i>📋</i><span>Órdenes</span></div>
+    <div class="menu-item" onclick="nav('ajustes', this)"><i>⚙️</i><span>Ajustes</span></div>
+  </div>
+
+  <div class="alert-box" onclick="openModal('mOrd')">
+    <i>🔥</i><p>Atención: Revisa las órdenes pendientes</p>
+  </div>
+
+  <div class="section-title">Últimos Movimientos <a href="#">Ver todos ></a></div>
+  <div id="listHome"></div>
 </main>
 
-<div id="mCli" class="modal"><div class="modal-content">
-  <h3>Cliente</h3><input type="text" id="cNom" placeholder="Nombre"><input type="tel" id="cTel" placeholder="Teléfono">
-  <div class="modal-btns"><button class="btn-cancel" onclick="cerrar('mCli')">Cancelar</button><button class="btn-main" style="flex:1" onclick="guardarCliente()">Guardar</button></div>
+<main id="view-clientes" class="view">
+  <div class="section-title">Tus Clientes <button class="btn-main" style="padding:6px 12px;font-size:12px" onclick="openModal('mCli')">+ Nuevo</button></div>
+  <div id="listCli"></div>
+</main>
+
+<main id="view-ordenes" class="view">
+  <div class="section-title">Órdenes de Servicio <button class="btn-main" style="padding:6px 12px;font-size:12px" onclick="openModal('mOrd')">+ Nueva</button></div>
+  <div id="listOrd"></div>
+</main>
+
+<main id="view-ajustes" class="view">
+  <div class="section-title">Datos del Local</div>
+  <div class="card">
+    <input type="text" id="inLoc" placeholder="Nombre del Local" style="width:100%;padding:10px;margin-bottom:10px;background:var(--bg);border:1px solid var(--bor);color:#fff;border-radius:8px">
+    <input type="tel" id="inTel" placeholder="WhatsApp (549...)" style="width:100%;padding:10px;margin-bottom:10px;background:var(--bg);border:1px solid var(--bor);color:#fff;border-radius:8px">
+    <label style="font-size:12px;color:var(--sub)">Subir Logo (Galería)</label>
+    <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="width:100%;padding:10px;color:var(--sub)">
+    <button class="btn-main" style="width:100%;margin-top:10px" onclick="saveConf()">Guardar Cambios</button>
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="nav('inicio', this, true)">🏠<span>Inicio</span></button>
+  <button class="nav-btn" onclick="nav('clientes', this, true)">👥<span>Clientes</span></button>
+  <button class="nav-btn" onclick="nav('ordenes', this, true)">📋<span>Órdenes</span></button>
+  <button class="nav-btn" onclick="nav('ajustes', this, true)">⚙️<span>Ajustes</span></button>
+</nav>
+
+<div id="mCli" class="modal"><div class="modal-cnt">
+  <h3>Nuevo Cliente</h3>
+  <input type="text" id="cNom" placeholder="Nombre completo">
+  <input type="tel" id="cTel" placeholder="Teléfono / WhatsApp">
+  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
-<div id="mOrd" class="modal"><div class="modal-content">
-  <h3>Orden</h3><select id="oCli"></select><input type="text" id="oEq" placeholder="Equipo"><input type="number" id="oCosto" placeholder="Costo">
-  <div class="modal-btns"><button class="btn-cancel" onclick="cerrar('mOrd')">Cancelar</button><button class="btn-main" style="flex:1" onclick="guardarOrden()">Guardar</button></div>
+<div id="mOrd" class="modal"><div class="modal-cnt">
+  <h3>Nueva Orden</h3>
+  <select id="oCli"></select>
+  <input type="text" id="oEq" placeholder="Equipo (Ej: iPhone 13)">
+  <input type="number" id="oCos" placeholder="Presupuesto / Costo">
+  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="addOrd()">Guardar</button></div>
 </div></div>
 
 <script>
-let D = JSON.parse(localStorage.getItem('tp_db')) || { config: { negocio:'Mi Taller', tecnico:'Técnico', tel:'', logo:'' }, clientes: [], ordenes: [] };
+let D = JSON.parse(localStorage.getItem('techpro_pro')) || { config: { local: 'Mi Taller', tel: '', logo: '' }, clientes: [], ordenes: [] };
 
-function init() {
-  setTema(localStorage.getItem('tp_tema') || 'oscuro-rojo');
+function nav(id, el, bottom=false) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if(bottom) el.classList.add('active');
+  else {
+    let idx = ['inicio','clientes','ordenes','ajustes'].indexOf(id);
+    if(idx >= 0) document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  }
   render();
 }
-
-function setTema(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('tp_tema', t);
-}
-
-function nav(v, btn) {
-  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  btn.classList.add('active');
-}
-
-function modal(id) { document.getElementById(id).classList.add('active'); }
-function cerrar(id) { document.getElementById(id).classList.remove('active'); }
+function openModal(id){ document.getElementById(id).classList.add('active'); }
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
 
 function subirLogo(e) {
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = ev => { document.getElementById('prevLogo').src = ev.target.result; document.getElementById('prevLogo').style.display = 'block'; };
-  r.readAsDataURL(f);
+  const r = new FileReader(); r.onload = ev => { D.config.logo = ev.target.result; save(); }; r.readAsDataURL(e.target.files[0]);
 }
-
-function guardarAjustes() {
-  D.config.negocio = document.getElementById('inNegocio').value || 'Mi Taller';
+function saveConf() {
+  D.config.local = document.getElementById('inLoc').value;
   D.config.tel = document.getElementById('inTel').value;
-  const img = document.getElementById('prevLogo');
-  if (img.src && img.style.display !== 'none') D.config.logo = img.src;
-  localStorage.setItem('tp_db', JSON.stringify(D));
-  render(); alert('Ajustes Guardados');
+  save(); alert('Ajustes guardados');
 }
-
-function guardarCliente() {
+function addCli() {
   const n = document.getElementById('cNom').value;
-  if(!n) return alert('Falta el nombre');
+  if(!n) return alert('Falta nombre');
   D.clientes.push({ id: Date.now(), nombre: n, tel: document.getElementById('cTel').value });
-  localStorage.setItem('tp_db', JSON.stringify(D));
-  cerrar('mCli'); render();
+  save(); closeModal('mCli');
 }
-
-function guardarOrden() {
+function addOrd() {
   const e = document.getElementById('oEq').value;
-  if(!e) return alert('Falta el equipo');
-  D.ordenes.push({ id: Date.now(), equipo: e, costo: parseFloat(document.getElementById('oCosto').value)||0, cliId: document.getElementById('oCli').value });
-  localStorage.setItem('tp_db', JSON.stringify(D));
-  cerrar('mOrd'); render();
+  if(!e) return alert('Falta equipo');
+  D.ordenes.push({ id: Date.now(), equipo: e, costo: parseFloat(document.getElementById('oCos').value)||0, cli: document.getElementById('oCli').value, estado: 'pendiente' });
+  save(); closeModal('mOrd');
 }
+function wa() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
+
+function save() { localStorage.setItem('techpro_pro', JSON.stringify(D)); render(); }
 
 function render() {
-  document.getElementById('nombreLocal').textContent = D.config.negocio;
-  document.getElementById('nombreTec').textContent = D.config.tecnico || 'Técnico';
-  if(D.config.logo) {
-    document.getElementById('logoHeader').src = D.config.logo;
-    document.getElementById('logoHeader').style.display = 'block';
-    document.getElementById('logoPh').style.display = 'none';
-  }
+  document.getElementById('hLocal').textContent = D.config.local;
+  document.getElementById('hTec').textContent = 'Hola, Técnico';
+  document.getElementById('inLoc').value = D.config.local;
+  document.getElementById('inTel').value = D.config.tel;
   
-  document.getElementById('inNegocio').value = D.config.negocio;
-  document.getElementById('inTel').value = D.config.tel || '';
   if(D.config.logo) {
-    document.getElementById('prevLogo').src = D.config.logo;
-    document.getElementById('prevLogo').style.display = 'block';
+    document.getElementById('logoBox').style.background = `url(${D.config.logo}) center/cover`;
+    document.getElementById('logoBox').textContent = '';
   }
 
-  document.getElementById('listaCli').innerHTML = D.clientes.length ? D.clientes.map(c => `<div class="card"><b>${c.nombre}</b><p style="color:var(--sub);font-size:13px">${c.tel}</p></div>`).join('') : '<p style="color:var(--sub)">No hay clientes</p>';
+  document.getElementById('sCli').textContent = D.clientes.length;
+  document.getElementById('sOrd').textContent = D.ordenes.length;
   
-  document.getElementById('listaOrd').innerHTML = D.ordenes.length ? D.ordenes.map(o => {
-    const c = D.clientes.find(x => x.id == o.cliId);
-    return `<div class="card"><b>${o.equipo}</b><p style="color:var(--sub);font-size:13px">Cliente: ${c ? c.nombre : 'Sin cliente'}</p><p style="font-size:14px;margin-top:5px;color:var(--acc)">$${o.costo}</p></div>`;
-  }).join('') : '<p style="color:var(--sub)">No hay órdenes</p>';
+  let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
+    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-pend">${o.estado}</span></div><div class="card-desc">💵 $${o.costo}</div></div>`;
+  });
+  document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
+  
+  h = ''; D.clientes.forEach(c => {
+    h += `<div class="card"><div class="card-head"><span class="card-title">${c.nombre}</span><button class="badge bg-ok" onclick="window.open('https://wa.me/${c.tel.replace(/\\D/g,'')}')">WA</button></div><div class="card-desc">📞 ${c.tel}</div></div>`;
+  });
+  document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
+  
+  h = ''; D.ordenes.forEach(o => {
+    const c = D.clientes.find(x => x.id == o.cli);
+    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-pend">${o.estado}</span></div><div class="card-desc">👤 ${c?c.nombre:'N/A'} | 💵 $${o.costo}</div></div>`;
+  });
+  document.getElementById('listOrd').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay órdenes</p>';
   
   document.getElementById('oCli').innerHTML = D.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
 }
 
-init();
+render();
 </script>
 </body>
 </html>
