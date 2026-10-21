@@ -37,10 +37,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .bg-pendiente{background:rgba(255,42,85,0.15);color:var(--prim)}
 .bg-entregado{background:rgba(16,185,129,0.15);color:var(--ok)}
 .bg-rechazado{background:rgba(139,92,246,0.15);color:#8B5CF6}
-
-/* ESTILO DEL SELECTOR DE ESTADO */
 .select-estado{background:var(--bg); color:var(--text); border:1px solid var(--bor); padding:6px; border-radius:8px; font-size:12px; font-weight:700; outline:none; cursor:pointer;}
-
 .btn-pdf{background:rgba(16,185,129,0.1);color:var(--ok);border:1px solid var(--ok);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .btn-img{background:rgba(168,85,247,0.1);color:#A855F7;border:1px solid #A855F7;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .btn-edit{background:var(--bor);color:var(--text);border:none;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
@@ -148,7 +145,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
       <div style="font-size:14px;font-weight:700;margin-bottom:15px;margin-top:25px;color:var(--text)">Logo del Local</div>
       <p style="font-size:11px;color:var(--sub);margin-bottom:10px;">Subí una imagen desde tu galería.</p>
       <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="padding:10px;color:var(--sub);width:100%;">
-      <button class="btn-main" style="width:100%;padding:14px;margin-top:20px" onclick="saveConf()">Guardar Ajustes</button>
+      <button class="btn-main" style="width:100%;padding:14px;margin-top:20px" onclick="saveConf()">Guardar Datos</button>
     </div>
     <div class="section-title">Tema de Colores</div>
     <div class="card">
@@ -385,8 +382,49 @@ window.setTheme = function(t) {
 }
 setTheme(localStorage.getItem('theme') || 'alerta-pro');
 
+// NUEVA FUNCIÓN DE SUBIR LOGO: COMPRIME, GUARDA EN FIREBASE Y ACTUALIZA
 window.subirLogo = function(e) {
-  const r = new FileReader(); r.onload = ev => { D.config.logo = ev.target.result; render(); }; r.readAsDataURL(e.target.files[0]);
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = async function() {
+      // Comprimir la imagen usando un lienzo (Canvas)
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 400; // Tamaño máximo para que no pese nada
+      const MAX_HEIGHT = 400;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+      } else {
+        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Calidad 0.7 (JPEG pesa mucho menos que PNG)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      
+      D.config.logo = dataUrl;
+      
+      // GUARDAR AUTOMÁTICAMENTE EN FIREBASE
+      try {
+        await setDoc(doc(db, 'config', uid), { logo: dataUrl }, { merge: true });
+        alert('¡Logo guardado con éxito!');
+      } catch (error) {
+        alert('Error al guardar logo: ' + error.message);
+      }
+      render();
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 window.saveConf = async function() {
@@ -395,7 +433,7 @@ window.saveConf = async function() {
   D.config.tel = document.getElementById('inTel').value;
   D.config.dir = document.getElementById('inDir').value;
   await setDoc(doc(db, 'config', uid), D.config, { merge: true });
-  alert('Ajustes guardados con éxito');
+  alert('Datos guardados con éxito');
   render();
 }
 
@@ -619,9 +657,13 @@ function render() {
   document.getElementById('inTel').value = D.config.tel || '';
   document.getElementById('inDir').value = D.config.dir || '';
   
+  // ARREGLO VISUAL: MOSTRAR O QUITAR EL LOGO CORRECTAMENTE
   if(D.config.logo) {
     document.getElementById('logoBox').style.backgroundImage = `url(${D.config.logo})`;
     document.getElementById('logoBox').textContent = '';
+  } else {
+    document.getElementById('logoBox').style.backgroundImage = 'none';
+    document.getElementById('logoBox').textContent = '🔧';
   }
 
   document.getElementById('sCli').textContent = D.clientes.length;
@@ -670,7 +712,6 @@ function render() {
       if(o.estado === 'entregado') bgClass = 'bg-entregado';
       if(o.estado === 'rechazado') bgClass = 'bg-rechazado';
 
-      // EL SELECTOR DE ESTADO ESTÁ DE VUELTA ACÁ
       h += `<div class="card">
         <div class="card-head">
           <span class="card-title">${o.equipo || 'Sin equipo'} </span>
