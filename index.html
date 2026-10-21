@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TechPro PRO</title>
-<!-- LIBRERÍA PARA GENERAR IMÁGENES -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; --ok: #10B981; --wa: #25D366; }
@@ -38,6 +37,10 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .bg-pendiente{background:rgba(255,42,85,0.15);color:var(--prim)}
 .bg-entregado{background:rgba(16,185,129,0.15);color:var(--ok)}
 .bg-rechazado{background:rgba(139,92,246,0.15);color:#8B5CF6}
+
+/* ESTILO DEL SELECTOR DE ESTADO */
+.select-estado{background:var(--bg); color:var(--text); border:1px solid var(--bor); padding:6px; border-radius:8px; font-size:12px; font-weight:700; outline:none; cursor:pointer;}
+
 .btn-pdf{background:rgba(16,185,129,0.1);color:var(--ok);border:1px solid var(--ok);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .btn-img{background:rgba(168,85,247,0.1);color:#A855F7;border:1px solid #A855F7;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .btn-edit{background:var(--bor);color:var(--text);border:none;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
@@ -166,7 +169,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </nav>
 </div>
 
-<!-- DIV OCULTO PARA GENERAR LA IMAGEN -->
 <div id="receiptTemplate" style="position: absolute; left: -9999px; top: 0; width: 400px; background: #ffffff; padding: 20px; font-family: system-ui, sans-serif; color: #000;">
   <div id="receiptContent"></div>
 </div>
@@ -546,7 +548,6 @@ window.imprimirPDF = function(id) {
   win.document.close();
 }
 
-// NUEVA FUNCIÓN PARA GENERAR IMAGEN Y ENVIAR POR WHATSAPP
 window.enviarImagen = async function(id) {
   const o = D.ordenes.find(x => x.id === id);
   if(!o) return;
@@ -561,7 +562,6 @@ window.enviarImagen = async function(id) {
   
   const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:100px; margin-bottom:10px; border-radius:8px;">` : '';
   
-  // Llenar la plantilla oculta
   document.getElementById('receiptContent').innerHTML = `
     <div style="text-align:center; border-bottom: 3px solid #00E5FF; padding-bottom: 15px; margin-bottom: 15px;">
       ${logoHtml}
@@ -590,18 +590,15 @@ window.enviarImagen = async function(id) {
     </div>
   `;
 
-  // Generar la imagen
   const element = document.getElementById('receiptTemplate');
   const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff' });
   
-  // Convertir a imagen y descargar
   const image = canvas.toDataURL("image/png");
   const link = document.createElement('a');
   link.href = image;
   link.download = `Comprobante_${o.equipo}_${c ? c.nombre : 'Cliente'}.png`;
   link.click();
 
-  // Abrir WhatsApp
   if(c && c.tel) {
     const msj = encodeURIComponent(`Hola ${c.nombre}, te envío el comprobante de tu equipo ${o.equipo}. ¡Saludos de ${D.config.local}!`);
     setTimeout(() => {
@@ -673,10 +670,17 @@ function render() {
       if(o.estado === 'entregado') bgClass = 'bg-entregado';
       if(o.estado === 'rechazado') bgClass = 'bg-rechazado';
 
+      // EL SELECTOR DE ESTADO ESTÁ DE VUELTA ACÁ
       h += `<div class="card">
         <div class="card-head">
           <span class="card-title">${o.equipo || 'Sin equipo'} </span>
-          <span class="badge ${bgClass}">${o.estado.toUpperCase()}</span>
+          <select class="select-estado" onchange="cambiarEstado('${o.id}', this.value)">
+            <option value="recibido" ${o.estado==='recibido'?'selected':''}>Recibido</option>
+            <option value="revisado" ${o.estado==='revisado'?'selected':''}>Revisado</option>
+            <option value="reparado" ${o.estado==='reparado'?'selected':''}>Reparado</option>
+            <option value="rechazado" ${o.estado==='rechazado'?'selected':''}>Rechazado</option>
+            <option value="entregado" ${o.estado==='entregado'?'selected':''}>Entregado</option>
+          </select>
         </div>
         <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${c ? c.nombre : 'Sin cliente'}</div>
         <div style="font-size:13px;color:var(--sub);margin-bottom:10px;">📅 ${fechaStr} &nbsp; 💵 $${o.costo}</div>
