@@ -42,7 +42,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .view.active{display:block}
 .btn-main{background:var(--prim);color:#FFF;border:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
 .btn-pdf{background:var(--ok);color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
-.btn-danger{background:rgba(255,42,85,0.1);color:var(--prim);border:1px solid var(--prim);padding:14px;border-radius:10px;width:100%;font-weight:700;font-size:15px;cursor:pointer;margin-top:20px}
+.btn-danger{background:rgba(255,42,85,0.1);color:var(--prim);border:2px solid var(--prim);padding:14px;border-radius:10px;width:100%;font-weight:700;font-size:16px;cursor:pointer;margin-top:30px}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
 .modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--neon);max-height:90vh;overflow-y:auto}
@@ -61,27 +61,21 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 </head>
 <body>
 
-<!-- PANTALLA DE LOGIN Y REGISTRO -->
 <div id="login-screen">
   <h1 style="color:var(--neon);font-size:28px;text-shadow:0 0 20px rgba(0,229,255,0.4);margin-bottom:5px">TechPro PRO</h1>
   <p id="auth-subtitle" style="color:var(--sub);margin-bottom:25px">Inicia sesión en tu taller</p>
-  
   <input type="text" id="authNombre" class="auth-input hidden" placeholder="Tu Nombre">
   <input type="email" id="authEmail" class="auth-input" placeholder="Correo electrónico">
   <input type="password" id="authPass" class="auth-input" placeholder="Contraseña">
-  
   <button id="btnAuth" class="btn-auth" onclick="handleAuth()">Iniciar Sesión</button>
-  
   <p style="margin-top:15px; font-size:13px; color:var(--sub); cursor:pointer;" onclick="toggleAuthMode()">
     <span id="authToggleText">¿No tienes cuenta? <b style="color:var(--neon)">Regístrate aquí</b></span>
   </p>
-
   <div style="margin: 20px 0; color: var(--sub); font-size: 12px; display:flex; align-items:center; width:100%; max-width:300px;">
     <div style="flex:1; height:1px; background:var(--bor)"></div>
     <span style="padding:0 10px">O</span>
     <div style="flex:1; height:1px; background:var(--bor)"></div>
   </div>
-
   <button id="google-btn" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Entrar con Google
   </button>
@@ -128,14 +122,30 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </main>
 
   <main id="view-ajustes" class="view">
-    <div class="section-title">Datos del Local</div>
-    <div class="card">
-      <input type="text" id="inLoc" placeholder="Nombre del Local">
-      <input type="tel" id="inTel" placeholder="WhatsApp (549...)">
-      <label style="font-size:12px;color:var(--sub)">Subir Logo (Galería)</label>
-      <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="padding:10px;color:var(--sub)">
-      <button class="btn-main" style="width:100%;padding:14px" onclick="saveConf()">Guardar Datos</button>
+    <div class="section-title">Ajustes</div>
+    
+    <div class="card" style="margin-bottom:20px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:15px;color:var(--text)">Datos del Negocio</div>
+      
+      <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">Nombre del Local *</label>
+      <input type="text" id="inLoc" placeholder="Mi Taller" style="margin-bottom:15px;">
+      
+      <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">Tu Nombre (Técnico)</label>
+      <input type="text" id="inTec" placeholder="Técnico" style="margin-bottom:15px;">
+      
+      <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">WhatsApp (Con código de país)</label>
+      <input type="tel" id="inTel" placeholder="Ej: 5491123456789" style="margin-bottom:15px;">
+      
+      <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">Dirección</label>
+      <input type="text" id="inDir" placeholder="Dirección del local" style="margin-bottom:15px;">
+
+      <div style="font-size:14px;font-weight:700;margin-bottom:15px;margin-top:25px;color:var(--text)">Logo del Local</div>
+      <p style="font-size:11px;color:var(--sub);margin-bottom:10px;">Subí una imagen desde tu galería para que aparezca en los recibos y en la app.</p>
+      <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="padding:10px;color:var(--sub);width:100%;">
+      
+      <button class="btn-main" style="width:100%;padding:14px;margin-top:20px" onclick="saveConf()">Guardar Ajustes</button>
     </div>
+    
     <div class="section-title">Tema de Colores</div>
     <div class="card">
       <div class="theme-grid">
@@ -143,6 +153,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
         <div class="theme-opt" style="background:#F8FAFC;color:#DC2626" onclick="setTheme('claro-rojo')">Claro/Rojo</div>
       </div>
     </div>
+
     <div style="padding: 0 16px; margin-bottom: 30px;">
       <button class="btn-danger" onclick="logout()">🚪 Cerrar Sesión</button>
     </div>
@@ -220,11 +231,9 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-let D = { config: { local: 'Mi Taller', tel: '', logo: '' }, clientes: [], ordenes: [], ventas: [] };
+let D = { config: { local: 'Mi Taller', tecnico: 'Técnico', tel: '', dir: '', logo: '' }, clientes: [], ordenes: [], ventas: [] };
 let uid = null;
-let isLoginMode = true; // Variable para saber si estamos en Login o Registro
-
-// --- LOGICA DE AUTENTICACIÓN ---
+let isLoginMode = true;
 
 window.toggleAuthMode = function() {
   isLoginMode = !isLoginMode;
@@ -245,22 +254,15 @@ window.handleAuth = async function() {
   const email = document.getElementById('authEmail').value.trim();
   const pass = document.getElementById('authPass').value;
   const name = document.getElementById('authNombre').value.trim();
-
-  if(!email || !pass) return alert('Por favor, completa correo y contraseña');
-  if(!isLoginMode && !name) return alert('Por favor, escribe tu nombre');
-
+  if(!email || !pass) return alert('Completa correo y contraseña');
+  if(!isLoginMode && !name) return alert('Escribe tu nombre');
   try {
-    if(isLoginMode) {
-      // INICIAR SESIÓN
-      await signInWithEmailAndPassword(auth, email, pass);
-    } else {
-      // REGISTRARSE
+    if(isLoginMode) await signInWithEmailAndPassword(auth, email, pass);
+    else {
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-      // Guardar el nombre en el perfil
       await updateProfile(userCredential.user, { displayName: name });
     }
   } catch(error) {
-    // Traducir errores comunes de Firebase
     let msj = error.message;
     if(msj.includes('auth/email-already-in-use')) msj = 'Ese correo ya está registrado.';
     if(msj.includes('auth/invalid-email')) msj = 'El correo no es válido.';
@@ -288,27 +290,18 @@ onAuthStateChanged(auth, async (user) => {
 
 window.logout = function() { signOut(auth); };
 
-// --- BASE DE DATOS Y LOGICA DE LA APP ---
-
 async function cargarDatos() {
   try {
     const cfg = await getDoc(doc(db, 'config', uid));
-    if (cfg.exists()) D.config = cfg.data();
-    
+    if (cfg.exists()) D.config = { ...D.config, ...cfg.data() };
     const allCli = (await getDocs(collection(db, 'clientes'))).docs.map(d => ({ id: d.id, ...d.data() }));
     D.clientes = allCli.filter(c => c.uid === uid);
-    
     const allOrd = (await getDocs(collection(db, 'ordenes'))).docs.map(d => ({ id: d.id, ...d.data() }));
     D.ordenes = allOrd.filter(o => o.uid === uid);
-    
     const allVen = (await getDocs(collection(db, 'ventas'))).docs.map(d => ({ id: d.id, ...d.data() }));
     D.ventas = allVen.filter(v => v.uid === uid);
-    
     render();
-  } catch(e) {
-    console.error(e);
-    alert("Error al cargar: " + e.message);
-  }
+  } catch(e) { console.error(e); alert("Error al cargar: " + e.message); }
 }
 
 window.nav = function(id, el) {
@@ -357,7 +350,9 @@ window.subirLogo = function(e) {
 
 window.saveConf = async function() {
   D.config.local = document.getElementById('inLoc').value || 'Mi Taller';
+  D.config.tecnico = document.getElementById('inTec').value || 'Técnico';
   D.config.tel = document.getElementById('inTel').value;
+  D.config.dir = document.getElementById('inDir').value;
   await setDoc(doc(db, 'config', uid), D.config, { merge: true });
   alert('Ajustes guardados con éxito');
   render();
@@ -374,39 +369,22 @@ window.addOrd = async function() {
   const nom = document.getElementById('oNom').value.trim();
   const eq = document.getElementById('oEq').value.trim();
   if(!nom || !eq) return alert('El nombre del cliente y el equipo son obligatorios');
-
   try {
     let clienteId = null;
     let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
-
-    if(clienteExistente) {
-      clienteId = clienteExistente.id;
-    } else {
+    if(clienteExistente) clienteId = clienteExistente.id;
+    else {
       const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('oTel').value, uid });
       clienteId = docRef.id;
     }
-
     const precio = parseFloat(document.getElementById('oPrecio').value) || 0;
     const sena = parseFloat(document.getElementById('oSena').value) || 0;
-
     await addDoc(collection(db, 'ordenes'), {
-      equipo: eq,
-      falla: document.getElementById('oFalla').value,
-      garantia: document.getElementById('oGarantia').value,
-      fecha: document.getElementById('oFecha').value,
-      precio: precio,
-      sena: sena,
-      costo: precio,
-      cli: clienteId,
-      estado: 'recibido',
-      uid
+      equipo: eq, falla: document.getElementById('oFalla').value, garantia: document.getElementById('oGarantia').value,
+      fecha: document.getElementById('oFecha').value, precio: precio, sena: sena, costo: precio, cli: clienteId, estado: 'recibido', uid
     });
-
-    closeModal('mOrd'); 
-    cargarDatos();
-  } catch(e) {
-    alert("Error al guardar: " + e.message);
-  }
+    closeModal('mOrd'); cargarDatos();
+  } catch(e) { alert("Error al guardar: " + e.message); }
 }
 
 window.addVenta = async function() {
@@ -428,11 +406,9 @@ window.imprimirPDF = function(id) {
   const o = D.ordenes.find(x => x.id === id);
   if(!o) return;
   const c = D.clientes.find(x => x.id == o.cli);
-  
   const win = window.open('', '_blank');
   const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:10px;">` : '';
   const saldo = (o.precio || o.costo) - (o.sena || 0);
-  
   win.document.write(`
     <html><head><title>Recibo - ${o.equipo}</title>
     <style>
@@ -447,7 +423,7 @@ window.imprimirPDF = function(id) {
     </head><body>
       ${logoHtml}
       <h2>${D.config.local}</h2>
-      <p>WhatsApp: ${D.config.tel || ''}</p>
+      <p>WhatsApp: ${D.config.tel || ''} | Dirección: ${D.config.dir || ''}</p>
       <div class="box">
         <div class="row"><strong>Fecha:</strong> <span>${o.fecha || 'No especificada'}</span></div>
         <div class="row"><strong>Cliente:</strong> <span>${c ? c.nombre : 'N/A'}</span></div>
@@ -470,8 +446,11 @@ window.imprimirPDF = function(id) {
 function render() {
   if(!uid) return;
   document.getElementById('hLocal').textContent = D.config.local;
-  document.getElementById('inLoc').value = D.config.local;
+  document.getElementById('hTec').textContent = 'Hola, ' + (D.config.tecnico || 'Técnico');
+  document.getElementById('inLoc').value = D.config.local || '';
+  document.getElementById('inTec').value = D.config.tecnico || '';
   document.getElementById('inTel').value = D.config.tel || '';
+  document.getElementById('inDir').value = D.config.dir || '';
   
   if(D.config.logo) {
     document.getElementById('logoBox').style.backgroundImage = `url(${D.config.logo})`;
@@ -480,7 +459,6 @@ function render() {
 
   document.getElementById('sCli').textContent = D.clientes.length;
   document.getElementById('sOrd').textContent = D.ordenes.filter(o => o.estado !== 'entregado' && o.estado !== 'rechazado').length;
-  
   document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
 
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
