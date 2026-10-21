@@ -129,7 +129,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
     <div id="listOrd"></div>
   </main>
 
-  <!-- NUEVA PESTAÑA PRESUPUESTOS -->
   <main id="view-presupuestos" class="view">
     <div class="section-title">Presupuestos <button class="btn-main" style="background:var(--purple)" onclick="openModal('mPres')">+ Nuevo</button></div>
     <div id="listPres"></div>
@@ -178,6 +177,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </nav>
 </div>
 
+<!-- PLANTILLA OCULTA PARA IMÁGENES -->
 <div id="receiptTemplate" style="position: absolute; left: -9999px; top: 0; width: 400px; background: #ffffff; padding: 20px; font-family: system-ui, sans-serif; color: #000;">
   <div id="receiptContent"></div>
 </div>
@@ -219,10 +219,10 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="saveOrd()">Guardar Orden</button></div>
 </div></div>
 
-<!-- MODAL PRESUPUESTO -->
 <div id="mPres" class="modal"><div class="modal-cnt">
   <h3>Nuevo Presupuesto</h3>
   <input type="text" id="pNom" placeholder="Nombre del Cliente">
+  <input type="tel" id="pTel" placeholder="Teléfono (para enviar por WhatsApp)">
   <input type="text" id="pEq" placeholder="Equipo / Servicio (Ej: Cambio de pantalla)">
   <textarea id="pDet" placeholder="Detalles del presupuesto" rows="2"></textarea>
   
@@ -404,7 +404,7 @@ window.openModal = function(id, editId = null){
     }
   }
   if(id === 'mPres') {
-    ['pNom','pEq','pDet','pMonto','pEnvio','pTotal'].forEach(i => document.getElementById(i).value = '');
+    ['pNom','pTel','pEq','pDet','pMonto','pEnvio','pTotal'].forEach(i => document.getElementById(i).value = '');
   }
   if(id === 'mVent') {
     document.getElementById('vFecha').valueAsDate = new Date();
@@ -525,15 +525,15 @@ window.saveOrd = async function() {
   } catch(e) { alert("Error al guardar: " + e.message); }
 }
 
-// GUARDAR PRESUPUESTO
 window.addPres = async function() {
   const nom = document.getElementById('pNom').value.trim();
+  const tel = document.getElementById('pTel').value.trim();
   const eq = document.getElementById('pEq').value.trim();
   const total = parseFloat(document.getElementById('pTotal').value);
   if(!nom || !eq || !total) return alert('Completa nombre, equipo y monto');
   
   const data = {
-    nombre: nom, equipo: eq, detalles: document.getElementById('pDet').value,
+    nombre: nom, telefono: tel, equipo: eq, detalles: document.getElementById('pDet').value,
     montoBase: parseFloat(document.getElementById('pMonto').value) || 0,
     costoEnvio: parseFloat(document.getElementById('pEnvio').value) || 0,
     tipoEnvio: document.getElementById('pTipoEnvio').value,
@@ -572,6 +572,152 @@ window.cambiarEstado = async function(id, nuevoEstado) {
 
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
 window.waCli = function(tel) { if(tel) window.open('https://wa.me/' + tel.replace(/\D/g,'')); }
+
+window.imprimirPDF = function(id) {
+  const o = D.ordenes.find(x => x.id === id);
+  if(!o) return;
+  const c = D.clientes.find(x => x.id == o.cli);
+  
+  const win = window.open('', '_blank');
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:8px;">` : '';
+  const saldo = (o.precio || o.costo) - (o.sena || 0);
+  
+  let fechaFormat = o.fecha || '';
+  if(fechaFormat) {
+    const parts = fechaFormat.split('-');
+    if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
+  win.document.write(`
+    <html><head><title>Comprobante - ${D.config.local}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; padding: 40px; color: #333; line-height: 1.5; }
+      .header { text-align: center; border-bottom: 3px solid #00E5FF; padding-bottom: 20px; margin-bottom: 20px; }
+      .header h1 { color: #111; margin: 10px 0 5px; font-size: 28px; letter-spacing: -0.5px; }
+      .header p { color: #666; font-size: 14px; margin: 2px 0; }
+      .section-title { font-size: 14px; text-transform: uppercase; color: #00E5FF; font-weight: 700; margin: 25px 0 10px; letter-spacing: 1px; }
+      .details { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+      .row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0; font-size: 14px; }
+      .row:last-child { border-bottom: none; padding-bottom: 0; }
+      .row strong { color: #111; }
+      .total-section { margin-top: 20px; background: #111; color: #fff; padding: 20px; border-radius: 12px; text-align: right; }
+      .total-section h3 { margin: 0; font-size: 14px; color: #aaa; text-transform: uppercase; }
+      .total-section h2 { margin: 5px 0 0; font-size: 32px; color: #00E5FF; }
+      .saldo { font-size: 16px; color: #f59e0b; font-weight: 600; margin-top: 10px; }
+      .legal { font-size: 11px; color: #64748b; text-align: justify; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+      .footer { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px; }
+      @media print { button { display: none; } body { padding: 0; } }
+    </style>
+    </head><body>
+      <div class="header">
+        ${logoHtml}
+        <h1>${D.config.local}</h1>
+        <p>📍 ${D.config.dir || 'Dirección no registrada'}</p>
+        <p>📱 WhatsApp: ${D.config.tel || 'Teléfono no registrado'}</p>
+      </div>
+
+      <div class="section-title">Detalles de la Orden</div>
+      <div class="details">
+        <div class="row"><strong>Fecha:</strong> <span>${fechaFormat || 'No especificada'}</span></div>
+        <div class="row"><strong>Cliente:</strong> <span>${c ? c.nombre : 'N/A'}</span></div>
+        <div class="row"><strong>Equipo:</strong> <span>${o.equipo}</span></div>
+        <div class="row"><strong>Falla Reportada:</strong> <span>${o.falla || 'No especificada'}</span></div>
+        <div class="row"><strong>Garantía:</strong> <span>${o.garantia || 'Sin garantía'}</span></div>
+        <div class="row"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: 700;">${o.estado}</span></div>
+      </div>
+
+      <div class="section-title">Desglose de Costos</div>
+      <div class="details">
+        <div class="row"><strong>Repuesto:</strong> <span>$${o.repuesto || 0}</span></div>
+        <div class="row"><strong>Mano de Obra:</strong> <span>$${o.manoObra || 0}</span></div>
+      </div>
+
+      <div class="total-section">
+        <h3>Total del Servicio</h3>
+        <h2>$${o.costo}</h2>
+        <div class="saldo">Seña / Anticipo: $${o.sena || 0}</div>
+        <div class="saldo" style="color:#00E5FF">SALDO PENDIENTE: $${saldo > 0 ? saldo : 0}</div>
+      </div>
+
+      <div class="legal">
+        <strong>Aviso Importante:</strong> El equipo será entregado únicamente contra presentación de este comprobante. Pasados los 30 días de la fecha de ingreso, y si el equipo no ha sido retirado, el mismo pasará a ser propiedad del local para cubrir los gastos generados por el almacenamiento y el arreglo del mismo. Por favor, revise su equipo al retirarlo.
+      </div>
+      
+      <div class="footer">
+        ¡Gracias por confiar en ${D.config.local}!<br>
+        Comprobante generado digitalmente.
+      </div>
+
+      <div style="text-align:center; margin-top:30px;">
+        <button onclick="window.print()" style="padding:14px 28px; background:#00E5FF; color:#000; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Imprimir / Guardar PDF</button>
+      </div>
+    </body></html>
+  `);
+  win.document.close();
+}
+
+window.enviarImagen = async function(id) {
+  const o = D.ordenes.find(x => x.id === id);
+  if(!o) return;
+  const c = D.clientes.find(x => x.id == o.cli);
+  const saldo = (o.precio || o.costo) - (o.sena || 0);
+  
+  let fechaFormat = o.fecha || '';
+  if(fechaFormat) {
+    const parts = fechaFormat.split('-');
+    if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:100px; margin-bottom:10px; border-radius:8px;">` : '';
+  
+  document.getElementById('receiptContent').innerHTML = `
+    <div style="text-align:center; border-bottom: 3px solid #00E5FF; padding-bottom: 15px; margin-bottom: 15px;">
+      ${logoHtml}
+      <h1 style="margin:0; font-size:22px; color:#111;">${D.config.local}</h1>
+      <p style="margin:2px 0; font-size:12px; color:#666;">📍 ${D.config.dir || ''}</p>
+      <p style="margin:2px 0; font-size:12px; color:#666;">📱 WhatsApp: ${D.config.tel || ''}</p>
+    </div>
+    
+    <div style="background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; font-size:13px; color:#333; margin-bottom:15px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Fecha:</strong> <span>${fechaFormat}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Cliente:</strong> <span>${c ? c.nombre : 'N/A'}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Equipo:</strong> <span>${o.equipo}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Falla:</strong> <span>${o.falla || '-'}</span></div>
+      <div style="display:flex; justify-content:space-between;"><strong>Estado:</strong> <span style="font-weight:bold;">${o.estado.toUpperCase()}</span></div>
+    </div>
+
+    <div style="background:#111; color:#fff; padding:15px; border-radius:10px; text-align:right; margin-bottom:15px;">
+      <div style="font-size:12px; color:#aaa; text-transform:uppercase;">Total</div>
+      <div style="font-size:26px; font-weight:bold; color:#00E5FF;">$${o.costo}</div>
+      <div style="font-size:13px; color:#f59e0b; margin-top:5px;">Seña: $${o.sena || 0}</div>
+      <div style="font-size:14px; font-weight:bold; color:#00E5FF; margin-top:2px;">Saldo: $${saldo > 0 ? saldo : 0}</div>
+    </div>
+
+    <div style="font-size:9px; color:#666; text-align:justify; border-top:1px solid #e2e8f0; padding-top:10px;">
+      <strong>Aviso:</strong> Pasados los 30 días, el equipo no retirado pasará a ser propiedad del local para cubrir gastos.
+    </div>
+  `;
+
+  const element = document.getElementById('receiptTemplate');
+  const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff' });
+  
+  const image = canvas.toDataURL("image/png");
+  const link = document.createElement('a');
+  link.href = image;
+  link.download = `Comprobante_${o.equipo}_${c ? c.nombre : 'Cliente'}.png`;
+  link.click();
+
+  if(c && c.tel) {
+    const msj = encodeURIComponent(`Hola ${c.nombre}, te envío el comprobante de tu equipo ${o.equipo}. ¡Saludos de ${D.config.local}!`);
+    setTimeout(() => {
+      window.open(`https://wa.me/${c.tel.replace(/\D/g,'')}?text=${msj}`, '_blank');
+    }, 800);
+    alert('¡Imagen descargada! Se abrirá WhatsApp para que adjuntes la imagen.');
+  } else {
+    alert('Imagen descargada. (El cliente no tiene teléfono guardado para abrir WhatsApp)');
+  }
+}
 
 // IMPRIMIR PRESUPUESTO
 window.imprimirPresupuesto = function(id) {
@@ -642,6 +788,72 @@ window.imprimirPresupuesto = function(id) {
   `);
   win.document.close();
 }
+
+// NUEVA FUNCIÓN: ENVIAR PRESUPUESTO COMO IMAGEN
+window.enviarPresupuestoImg = async function(id) {
+  const p = D.presupuestos.find(x => x.id === id);
+  if(!p) return;
+  
+  let fechaFormat = p.fecha || '';
+  if(fechaFormat) {
+    const parts = fechaFormat.split('T')[0].split('-');
+    if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:100px; margin-bottom:10px; border-radius:8px;">` : '';
+  
+  // Llenar la plantilla oculta con diseño violeta para presupuestos
+  document.getElementById('receiptContent').innerHTML = `
+    <div style="text-align:center; border-bottom: 3px solid #A855F7; padding-bottom: 15px; margin-bottom: 15px;">
+      ${logoHtml}
+      <h1 style="margin:0; font-size:22px; color:#111;">${D.config.local}</h1>
+      <p style="margin:2px 0; font-size:12px; color:#666;">📍 ${D.config.dir || ''}</p>
+      <p style="margin:2px 0; font-size:12px; color:#666;">📱 WhatsApp: ${D.config.tel || ''}</p>
+      <h2 style="color:#A855F7; margin-top:10px; font-size:16px;">PRESUPUESTO</h2>
+    </div>
+    
+    <div style="background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; font-size:13px; color:#333; margin-bottom:15px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Fecha:</strong> <span>${fechaFormat}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Cliente:</strong> <span>${p.nombre}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Equipo/Servicio:</strong> <span>${p.equipo}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Detalles:</strong> <span>${p.detalles || '-'}</span></div>
+      <div style="display:flex; justify-content:space-between;"><strong>Entrega:</strong> <span>${p.tipoEnvio}</span></div>
+    </div>
+
+    <div style="background:#111; color:#fff; padding:15px; border-radius:10px; text-align:right; margin-bottom:15px;">
+      <div style="font-size:12px; color:#aaa; text-transform:uppercase;">Total Presupuestado</div>
+      <div style="font-size:26px; font-weight:bold; color:#A855F7;">$${p.total}</div>
+      ${p.costoEnvio > 0 ? `<div style="font-size:12px; color:#aaa; margin-top:5px;">Incluye envío: $${p.costoEnvio}</div>` : ''}
+    </div>
+
+    <div style="font-size:9px; color:#666; text-align:justify; border-top:1px solid #e2e8f0; padding-top:10px;">
+      <strong>Nota:</strong> Este es un presupuesto informativo. Los precios están sujetos a cambios hasta la aprobación del cliente.
+    </div>
+  `;
+
+  // Generar la imagen
+  const element = document.getElementById('receiptTemplate');
+  const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff' });
+  
+  // Convertir a imagen y descargar
+  const image = canvas.toDataURL("image/png");
+  const link = document.createElement('a');
+  link.href = image;
+  link.download = `Presupuesto_${p.equipo}_${p.nombre}.png`;
+  link.click();
+
+  // Abrir WhatsApp si tiene teléfono
+  if(p.telefono) {
+    const msj = encodeURIComponent(`Hola ${p.nombre}, te envío el presupuesto por ${p.equipo}. ¡Saludos de ${D.config.local}!`);
+    setTimeout(() => {
+      window.open(`https://wa.me/${p.telefono.replace(/\D/g,'')}?text=${msj}`, '_blank');
+    }, 800);
+    alert('¡Imagen descargada! Se abrirá WhatsApp para que adjuntes la imagen.');
+  } else {
+    alert('Imagen descargada. (No guardaste un teléfono para este cliente, así que no se abrió WhatsApp).');
+  }
+}
+
 
 function render() {
   if(!uid) return;
@@ -732,15 +944,16 @@ function render() {
   }
   document.getElementById('listOrd').innerHTML = h;
 
-  // RENDER PRESUPUESTOS
+  // RENDER PRESUPUESTOS CON EL NUEVO BOTÓN ENVIAR IMG
   h = ''; D.presupuestos.forEach(p => {
     h += `<div class="card">
       <div class="card-head"><span class="card-title">${p.equipo}</span><span class="badge bg-presupuesto">Presupuesto</span></div>
       <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${p.nombre}</div>
       <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">📦 ${p.tipoEnvio}</div>
       <div style="font-size:15px;color:var(--purple);font-weight:bold;margin-bottom:10px;">Total: $${p.total}</div>
-      <div style="display:flex; gap:8px; border-top:1px solid var(--bor); padding-top:15px;">
+      <div style="display:flex; gap:8px; border-top:1px solid var(--bor); padding-top:15px; flex-wrap:wrap;">
         <button class="btn-img" onclick="imprimirPresupuesto('${p.id}')">🖨️ PDF</button>
+        <button class="btn-img" onclick="enviarPresupuestoImg('${p.id}')">📲 Enviar Img</button>
         <button class="btn-del" onclick="deletePres('${p.id}')">Borrar</button>
       </div>
     </div>`;
