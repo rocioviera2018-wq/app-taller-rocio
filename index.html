@@ -14,7 +14,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .btn-google{background:#FFF;color:#000;border:none;padding:12px 20px;border-radius:10px;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:300px;margin-top:20px;cursor:pointer}
 .header{padding:16px;display:flex;justify-content:space-between;align-items:center}
 .user-info{display:flex;gap:12px;align-items:center}
-/* LOGO MÁS GRANDE AQUÍ */
 .avatar{width:64px;height:64px;border-radius:50%;background:var(--card);border:3px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:28px;background-size:cover;background-position:center}
 .greeting h2{font-size:18px;font-weight:700}
 .greeting p{font-size:12px;color:var(--sub)}
@@ -38,9 +37,9 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .btn-pdf{background:#10B981;color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
-.modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--neon)}
+.modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--neon);max-height:90vh;overflow-y:auto}
 .modal-cnt h3{margin-bottom:15px;color:var(--neon)}
-.modal-cnt input, .modal-cnt select {width:100%;padding:14px;border:1px solid var(--bor);border-radius:10px;margin-bottom:12px;background:var(--bg);color:var(--text);font-size:14px}
+.modal-cnt input, .modal-cnt select, .modal-cnt textarea {width:100%;padding:14px;border:1px solid var(--bor);border-radius:10px;margin-bottom:12px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
 .modal-btns{display:flex;gap:10px;margin-top:10px}
 .btn-cancel{background:transparent;color:var(--sub);border:1px solid var(--bor);padding:12px;border-radius:8px;flex:1}
 .btn-save{background:var(--neon);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700}
@@ -92,10 +91,10 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <main id="view-ajustes" class="view">
     <div class="section-title">Datos del Local</div>
     <div class="card">
-      <input type="text" id="inLoc" placeholder="Nombre del Local" style="width:100%;padding:12px;margin-bottom:10px;background:var(--bg);border:1px solid var(--bor);color:#fff;border-radius:8px">
-      <input type="tel" id="inTel" placeholder="WhatsApp (549...)" style="width:100%;padding:12px;margin-bottom:10px;background:var(--bg);border:1px solid var(--bor);color:#fff;border-radius:8px">
+      <input type="text" id="inLoc" placeholder="Nombre del Local">
+      <input type="tel" id="inTel" placeholder="WhatsApp (549...)">
       <label style="font-size:12px;color:var(--sub)">Subir Logo (Galería)</label>
-      <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="width:100%;padding:10px;color:var(--sub);margin-bottom:10px">
+      <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="padding:10px;color:var(--sub)">
       <button class="btn-main" style="width:100%;padding:14px" onclick="saveConf()">Guardar Datos</button>
     </div>
     <div class="section-title">Tema de Colores</div>
@@ -115,6 +114,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </nav>
 </div>
 
+<!-- MODAL CLIENTE (Manual) -->
 <div id="mCli" class="modal"><div class="modal-cnt">
   <h3>Nuevo Cliente</h3>
   <input type="text" id="cNom" placeholder="Nombre completo">
@@ -122,12 +122,30 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
+<!-- MODAL ORDEN (Completo) -->
 <div id="mOrd" class="modal"><div class="modal-cnt">
-  <h3>Nueva Orden</h3>
-  <select id="oCli"></select>
+  <h3>Nueva Orden de Servicio</h3>
+  
+  <label style="font-size:12px;color:var(--sub);margin-bottom:5px;display:block">Datos del Cliente</label>
+  <input type="text" id="oNom" placeholder="Nombre del Cliente" list="listaClientes" required>
+  <datalist id="listaClientes"></datalist>
+  <input type="tel" id="oTel" placeholder="Teléfono (Opcional si ya existe)">
+  
+  <label style="font-size:12px;color:var(--sub);margin-bottom:5px;display:block">Detalles del Equipo</label>
+  <input type="date" id="oFecha" required>
   <input type="text" id="oEq" placeholder="Equipo (Ej: iPhone 13)">
-  <input type="number" id="oCos" placeholder="Costo">
-  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="addOrd()">Guardar</button></div>
+  <textarea id="oFalla" placeholder="Problema / Falla reportada" rows="2"></textarea>
+  
+  <label style="font-size:12px;color:var(--sub);margin-bottom:5px;display:block">Garantía y Costo</label>
+  <select id="oGarantia">
+    <option value="30 días">Garantía de 30 días</option>
+    <option value="60 días">Garantía de 60 días</option>
+    <option value="1 año">Garantía de 1 año</option>
+    <option value="Sin garantía">Sin garantía</option>
+  </select>
+  <input type="number" id="oCos" placeholder="Costo total">
+  
+  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="addOrd()">Guardar Orden</button></div>
 </div></div>
 
 <script type="module">
@@ -195,7 +213,19 @@ window.nav = function(id, el) {
   render();
 }
 
-window.openModal = function(id){ document.getElementById(id).classList.add('active'); }
+window.openModal = function(id){ 
+  if(id === 'mOrd') {
+    // Poner fecha de hoy por defecto
+    document.getElementById('oFecha').valueAsDate = new Date();
+    // Limpiar campos
+    document.getElementById('oNom').value = '';
+    document.getElementById('oTel').value = '';
+    document.getElementById('oEq').value = '';
+    document.getElementById('oFalla').value = '';
+    document.getElementById('oCos').value = '';
+  }
+  document.getElementById(id).classList.add('active'); 
+}
 window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); }
 
 window.setTheme = function(t) {
@@ -223,16 +253,57 @@ window.addCli = async function() {
   closeModal('mCli'); cargarDatos();
 }
 
+// LÓGICA DE GUARDAR ORDEN (Con auto-guardado de cliente)
 window.addOrd = async function() {
-  const e = document.getElementById('oEq').value;
-  if(!e) return alert('Falta el equipo');
-  await addDoc(collection(db, 'ordenes'), { equipo: e, costo: parseFloat(document.getElementById('oCos').value)||0, cli: document.getElementById('oCli').value, estado: 'pendiente', uid });
-  closeModal('mOrd'); cargarDatos();
+  const nom = document.getElementById('oNom').value.trim();
+  const tel = document.getElementById('oTel').value.trim();
+  const eq = document.getElementById('oEq').value.trim();
+  const falla = document.getElementById('oFalla').value;
+  const garantia = document.getElementById('oGarantia').value;
+  const fecha = document.getElementById('oFecha').value;
+  const costo = parseFloat(document.getElementById('oCos').value) || 0;
+
+  if(!nom || !eq) return alert('El nombre del cliente y el equipo son obligatorios');
+
+  try {
+    // 1. Buscar si el cliente ya existe en la lista
+    let clienteId = null;
+    let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
+
+    if(clienteExistente) {
+      clienteId = clienteExistente.id;
+      // Si el cliente existía pero no tenía teléfono, lo actualizamos
+      if(tel && !clienteExistente.tel) {
+         // (Opcional, podríamos actualizar en BD)
+      }
+    } else {
+      // 2. Si no existe, lo creamos en la base de datos de clientes
+      const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: tel, uid });
+      clienteId = docRef.id;
+    }
+
+    // 3. Guardar la orden con todos los datos
+    await addDoc(collection(db, 'ordenes'), {
+      equipo: eq,
+      falla: falla,
+      garantia: garantia,
+      fecha: fecha,
+      costo: costo,
+      cli: clienteId,
+      estado: 'pendiente',
+      uid
+    });
+
+    closeModal('mOrd'); 
+    cargarDatos();
+  } catch(e) {
+    alert("Error al guardar: " + e.message);
+  }
 }
 
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
 
-// NUEVA FUNCIÓN PDF
+// NUEVA FUNCIÓN PDF MEJORADA
 window.imprimirPDF = function(id) {
   const o = D.ordenes.find(x => x.id === id);
   if(!o) return;
@@ -244,22 +315,29 @@ window.imprimirPDF = function(id) {
   win.document.write(`
     <html><head><title>Recibo - ${o.equipo}</title>
     <style>
-      body{font-family:system-ui,sans-serif; padding:30px; text-align:center; color:#000;}
-      h2{margin:0; font-size:24px;}
-      .box{border:2px solid #eee; padding:20px; margin-top:20px; text-align:left; border-radius:12px;}
-      .total{font-size:24px; font-weight:bold; margin-top:20px; border-top:2px solid #000; padding-top:15px; text-align:center;}
+      body{font-family:system-ui,sans-serif; padding:30px; color:#000;}
+      h2{margin:0; font-size:24px; text-align:center;}
+      p{text-align:center; color:#666; margin-bottom:20px;}
+      .box{border:2px solid #eee; padding:20px; border-radius:12px;}
+      .row{display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:5px;}
+      .total{font-size:24px; font-weight:bold; margin-top:20px; padding-top:15px; text-align:center; border-top:2px solid #000;}
     </style>
     </head><body>
       ${logoHtml}
       <h2>${D.config.local}</h2>
-      <p style="color:#666;">WhatsApp: ${D.config.tel || ''}</p>
+      <p>WhatsApp: ${D.config.tel || ''}</p>
       <div class="box">
-        <p><strong>Equipo:</strong> ${o.equipo}</p>
-        <p><strong>Cliente:</strong> ${c ? c.nombre : 'Sin cliente'}</p>
-        <p><strong>Estado:</strong> ${o.estado.toUpperCase()}</p>
+        <div class="row"><strong>Fecha:</strong> <span>${o.fecha || 'No especificada'}</span></div>
+        <div class="row"><strong>Cliente:</strong> <span>${c ? c.nombre : 'N/A'}</span></div>
+        <div class="row"><strong>Teléfono:</strong> <span>${c ? c.tel : 'N/A'}</span></div>
+        <div class="row"><strong>Equipo:</strong> <span>${o.equipo}</span></div>
+        <div class="row"><strong>Falla reportada:</strong> <span>${o.falla || 'No especificada'}</span></div>
+        <div class="row"><strong>Garantía:</strong> <span>${o.garantia || 'Sin garantía'}</span></div>
         <div class="total">TOTAL: $${o.costo}</div>
       </div>
-      <button onclick="window.print()" style="margin-top:30px; padding:12px 24px; background:#000; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer;">Imprimir / Guardar PDF</button>
+      <div style="text-align:center; margin-top:30px;">
+        <button onclick="window.print()" style="padding:12px 24px; background:#000; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer;">Imprimir / Guardar PDF</button>
+      </div>
     </body></html>
   `);
   win.document.close();
@@ -279,6 +357,9 @@ function render() {
   document.getElementById('sCli').textContent = D.clientes.length;
   document.getElementById('sOrd').textContent = D.ordenes.length;
   
+  // Autocompletado de clientes en el modal de órdenes
+  document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
+
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
     h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
   });
@@ -293,13 +374,15 @@ function render() {
     const c = D.clientes.find(x => x.id == o.cli);
     h += `<div class="card">
       <div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge">${o.estado}</span></div>
-      <div style="font-size:13px;color:var(--sub);margin-bottom:10px;">👤 ${c?c.nombre:'N/A'} | 💵 $${o.costo}</div>
-      <button class="btn-pdf" onclick="imprimirPDF('${o.id}')">🖨️ Imprimir / PDF</button>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${c?c.nombre:'N/A'} | 📅 ${o.fecha||''}</div>
+      <div style="font-size:12px;color:var(--sub);margin-bottom:10px;">🔧 ${o.falla || 'Sin falla registrada'}</div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:bold;color:var(--neon)">$${o.costo}</span>
+        <button class="btn-pdf" onclick="imprimirPDF('${o.id}')">🖨️ PDF</button>
+      </div>
     </div>`;
   });
   document.getElementById('listOrd').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay órdenes</p>';
-  
-  document.getElementById('oCli').innerHTML = D.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
 }
 </script>
 </body>
