@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TechPro PRO</title>
 <style>
-:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; --ok: #10B981; }
-[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --neon: #DC2626; --bor: #E2E8F0; --ok: #10B981; }
+:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; --ok: #10B981; --wa: #25D366; }
+[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --neon: #DC2626; --bor: #E2E8F0; --ok: #10B981; --wa: #25D366; }
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .hidden{display:none!important}
@@ -20,20 +20,29 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .greeting h2{font-size:18px;font-weight:700}
 .greeting p{font-size:12px;color:var(--sub)}
 .icon-btn{background:var(--card);border:1px solid var(--bor);color:var(--text);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:20px}
-.stat-box{background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--bor);text-align:center}
-.stat-val{font-size:22px;font-weight:700;color:var(--neon)}
-.stat-lab{font-size:11px;color:var(--sub);margin-top:4px;font-weight:600}
+
+/* 3 COLUMNAS PARA EL DASHBOARD */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 16px;margin-bottom:20px}
+.stat-box{background:var(--card);padding:12px 6px;border-radius:12px;border:1px solid var(--bor);text-align:center}
+.stat-val{font-size:18px;font-weight:700;color:var(--neon)}
+.stat-lab{font-size:10px;color:var(--sub);margin-top:4px;font-weight:600}
+
 .section-title{font-size:15px;color:var(--sub);padding:0 16px;margin-bottom:12px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
 .card{background:var(--card);margin:0 16px 12px;padding:16px;border-radius:12px;border:1px solid var(--bor)}
 .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .card-title{font-weight:700;font-size:15px}
+.filtros{display:flex; gap:8px; padding:0 16px; margin-bottom:15px; overflow-x:auto;}
+.chip{background:var(--card); border:1px solid var(--bor); color:var(--text); padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer;}
+.chip.active{border-color:var(--neon); color:var(--neon); background:rgba(0,229,255,0.05);}
 .badge{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
 .bg-recibido{background:rgba(0,229,255,0.15);color:var(--neon)}
-.bg-revisado{background:rgba(245,158,11,0.15);color:#F59E0B}
-.bg-reparado{background:rgba(16,185,129,0.15);color:var(--ok)}
-.bg-rechazado{background:rgba(255,42,85,0.15);color:var(--prim)}
-.bg-entregado{background:rgba(139,92,246,0.15);color:#8B5CF6}
+.bg-pendiente{background:rgba(255,42,85,0.15);color:var(--prim)}
+.bg-entregado{background:rgba(16,185,129,0.15);color:var(--ok)}
+.bg-rechazado{background:rgba(139,92,246,0.15);color:#8B5CF6}
+.btn-pdf{background:rgba(16,185,129,0.1);color:var(--ok);border:1px solid var(--ok);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-edit{background:var(--bor);color:var(--text);border:none;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-del{background:rgba(255,42,85,0.1);color:var(--prim);border:1px solid var(--prim);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-wa{background:rgba(37,211,102,0.1);color:var(--wa);border:1px solid var(--wa);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:10px 0 20px;z-index:100}
 .nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:20px;gap:2px;cursor:pointer;flex:1}
 .nav-btn span{font-size:9px;font-weight:600}
@@ -41,7 +50,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .view{display:none;padding-top:10px}
 .view.active{display:block}
 .btn-main{background:var(--prim);color:#FFF;border:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
-.btn-pdf{background:var(--ok);color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
 .btn-danger{background:rgba(255,42,85,0.1);color:var(--prim);border:2px solid var(--prim);padding:14px;border-radius:10px;width:100%;font-weight:700;font-size:16px;cursor:pointer;margin-top:30px}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
@@ -53,8 +61,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .btn-save{background:var(--neon);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700}
 .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .theme-opt{padding:12px;border-radius:8px;border:2px solid var(--bor);cursor:pointer;text-align:center;font-size:12px;font-weight:700}
-.select-estado{background:var(--bg);color:var(--text);border:1px solid var(--bor);padding:6px;border-radius:8px;font-size:12px;font-weight:700;outline:none}
-.total-box{background:var(--card);margin:20px 16px;padding:20px;border-radius:12px;border:1px solid var(--ok);text-align:center;box-shadow:0 0 15px rgba(16,185,129,0.1)}
+.total-box{background:var(--card);margin:20px 16px;padding:20px;border-radius:12px;border:1px solid var(--ok);text-align:center;}
 .total-box h3{color:var(--sub);font-size:14px;margin-bottom:5px}
 .total-box p{font-size:28px;font-weight:800;color:var(--ok)}
 </style>
@@ -72,9 +79,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
     <span id="authToggleText">¿No tienes cuenta? <b style="color:var(--neon)">Regístrate aquí</b></span>
   </p>
   <div style="margin: 20px 0; color: var(--sub); font-size: 12px; display:flex; align-items:center; width:100%; max-width:300px;">
-    <div style="flex:1; height:1px; background:var(--bor)"></div>
-    <span style="padding:0 10px">O</span>
-    <div style="flex:1; height:1px; background:var(--bor)"></div>
+    <div style="flex:1; height:1px; background:var(--bor)"></div><span style="padding:0 10px">O</span><div style="flex:1; height:1px; background:var(--bor)"></div>
   </div>
   <button id="google-btn" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Entrar con Google
@@ -95,8 +100,9 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
   <main id="view-inicio" class="view active">
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Órdenes Activas</div></div>
+      <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Activas</div></div>
       <div class="stat-box"><div class="stat-val" id="sCli">0</div><div class="stat-lab">Clientes</div></div>
+      <div class="stat-box"><div class="stat-val" id="sGanancia" style="color:var(--ok)">$0</div><div class="stat-lab">Ganancia Real</div></div>
     </div>
     <div class="section-title">Últimos Movimientos</div>
     <div id="listHome"></div>
@@ -109,43 +115,38 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
   <main id="view-ordenes" class="view">
     <div class="section-title">Órdenes <button class="btn-main" onclick="openModal('mOrd')">+ Nueva</button></div>
+    <div class="filtros">
+      <div class="chip active" onclick="filtrarOrd('todas', this)">Todas</div>
+      <div class="chip" onclick="filtrarOrd('recibido', this)">Ingreso</div>
+      <div class="chip" onclick="filtrarOrd('pendiente', this)">Pendiente</div>
+      <div class="chip" onclick="filtrarOrd('entregado', this)">Entregado</div>
+    </div>
     <div id="listOrd"></div>
   </main>
 
   <main id="view-ventas" class="view">
     <div class="section-title">Ventas de Accesorios <button class="btn-main" onclick="openModal('mVent')">+ Venta</button></div>
-    <div class="total-box">
-      <h3>Total Recaudado en Ventas</h3>
-      <p id="totalVentas">$0</p>
-    </div>
+    <div class="total-box"><h3>Total Recaudado en Ventas</h3><p id="totalVentas">$0</p></div>
     <div id="listVentas"></div>
   </main>
 
   <main id="view-ajustes" class="view">
     <div class="section-title">Ajustes</div>
-    
     <div class="card" style="margin-bottom:20px;">
       <div style="font-size:14px;font-weight:700;margin-bottom:15px;color:var(--text)">Datos del Negocio</div>
-      
       <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">Nombre del Local *</label>
       <input type="text" id="inLoc" placeholder="Mi Taller" style="margin-bottom:15px;">
-      
       <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">Tu Nombre (Técnico)</label>
       <input type="text" id="inTec" placeholder="Técnico" style="margin-bottom:15px;">
-      
       <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">WhatsApp (Con código de país)</label>
       <input type="tel" id="inTel" placeholder="Ej: 5491123456789" style="margin-bottom:15px;">
-      
       <label style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase">Dirección</label>
       <input type="text" id="inDir" placeholder="Dirección del local" style="margin-bottom:15px;">
-
       <div style="font-size:14px;font-weight:700;margin-bottom:15px;margin-top:25px;color:var(--text)">Logo del Local</div>
-      <p style="font-size:11px;color:var(--sub);margin-bottom:10px;">Subí una imagen desde tu galería para que aparezca en los recibos y en la app.</p>
+      <p style="font-size:11px;color:var(--sub);margin-bottom:10px;">Subí una imagen desde tu galería.</p>
       <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="padding:10px;color:var(--sub);width:100%;">
-      
       <button class="btn-main" style="width:100%;padding:14px;margin-top:20px" onclick="saveConf()">Guardar Ajustes</button>
     </div>
-    
     <div class="section-title">Tema de Colores</div>
     <div class="card">
       <div class="theme-grid">
@@ -153,10 +154,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
         <div class="theme-opt" style="background:#F8FAFC;color:#DC2626" onclick="setTheme('claro-rojo')">Claro/Rojo</div>
       </div>
     </div>
-
-    <div style="padding: 0 16px; margin-bottom: 30px;">
-      <button class="btn-danger" onclick="logout()">🚪 Cerrar Sesión</button>
-    </div>
+    <div style="padding: 0 16px; margin-bottom: 30px;"><button class="btn-danger" onclick="logout()">🚪 Cerrar Sesión</button></div>
   </main>
 
   <nav class="bottom-nav">
@@ -176,7 +174,8 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 </div></div>
 
 <div id="mOrd" class="modal"><div class="modal-cnt">
-  <h3>Nueva Orden de Servicio</h3>
+  <h3 id="tituloModOrd">Nueva Orden</h3>
+  <input type="hidden" id="editOrdId">
   <input type="text" id="oNom" placeholder="Nombre del Cliente" list="listaClientes" required>
   <datalist id="listaClientes"></datalist>
   <input type="tel" id="oTel" placeholder="Teléfono (Opcional)">
@@ -188,6 +187,17 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
     <option value="60 días">Garantía de 60 días</option>
     <option value="1 año">Garantía de 1 año</option>
   </select>
+
+  <div style="display:flex; gap:10px;">
+    <div style="flex:1;">
+      <label style="font-size:11px;color:var(--sub)">Costo Repuesto</label>
+      <input type="number" id="oRepuesto" placeholder="0" oninput="calcTotal()">
+    </div>
+    <div style="flex:1;">
+      <label style="font-size:11px;color:var(--sub)">Mano de Obra</label>
+      <input type="number" id="oManoObra" placeholder="0" oninput="calcTotal()">
+    </div>
+  </div>
   <div style="display:flex; gap:10px;">
     <div style="flex:1;">
       <label style="font-size:11px;color:var(--sub)">Precio Total</label>
@@ -198,10 +208,11 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
       <input type="number" id="oSena" placeholder="0" oninput="calcSaldo()">
     </div>
   </div>
+
   <div id="displaySaldo" style="background:var(--bg); border:1px dashed var(--neon); padding:10px; border-radius:8px; text-align:center; margin-bottom:10px; font-weight:700; color:var(--neon); display:none;">
     Saldo pendiente: $<span id="valSaldo">0</span>
   </div>
-  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="addOrd()">Guardar Orden</button></div>
+  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="saveOrd()">Guardar Orden</button></div>
 </div></div>
 
 <div id="mVent" class="modal"><div class="modal-cnt">
@@ -214,7 +225,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -234,6 +245,7 @@ const provider = new GoogleAuthProvider();
 let D = { config: { local: 'Mi Taller', tecnico: 'Técnico', tel: '', dir: '', logo: '' }, clientes: [], ordenes: [], ventas: [] };
 let uid = null;
 let isLoginMode = true;
+let filtroActual = 'todas';
 
 window.toggleAuthMode = function() {
   isLoginMode = !isLoginMode;
@@ -312,11 +324,38 @@ window.nav = function(id, el) {
   render();
 }
 
-window.openModal = function(id){ 
+window.filtrarOrd = function(f, el) {
+  filtroActual = f;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+window.openModal = function(id, editId = null){ 
   if(id === 'mOrd') {
-    document.getElementById('oFecha').valueAsDate = new Date();
-    ['oNom','oTel','oEq','oFalla','oPrecio','oSena'].forEach(i => document.getElementById(i).value = '');
-    document.getElementById('displaySaldo').style.display = 'none';
+    if(editId) {
+      const o = D.ordenes.find(x => x.id === editId);
+      const c = D.clientes.find(x => x.id == o.cli);
+      document.getElementById('tituloModOrd').textContent = "Editar Orden";
+      document.getElementById('editOrdId').value = o.id;
+      document.getElementById('oNom').value = c ? c.nombre : '';
+      document.getElementById('oTel').value = c ? c.tel : '';
+      document.getElementById('oFecha').value = o.fecha;
+      document.getElementById('oEq').value = o.equipo;
+      document.getElementById('oFalla').value = o.falla;
+      document.getElementById('oGarantia').value = o.garantia;
+      document.getElementById('oRepuesto').value = o.repuesto || '';
+      document.getElementById('oManoObra').value = o.manoObra || '';
+      document.getElementById('oPrecio').value = o.costo;
+      document.getElementById('oSena').value = o.sena;
+      calcSaldo();
+    } else {
+      document.getElementById('tituloModOrd').textContent = "Nueva Orden";
+      document.getElementById('editOrdId').value = '';
+      document.getElementById('oFecha').valueAsDate = new Date();
+      ['oNom','oTel','oEq','oFalla','oRepuesto','oManoObra','oPrecio','oSena'].forEach(i => document.getElementById(i).value = '');
+      document.getElementById('displaySaldo').style.display = 'none';
+    }
   }
   if(id === 'mVent') {
     document.getElementById('vFecha').valueAsDate = new Date();
@@ -325,6 +364,13 @@ window.openModal = function(id){
   document.getElementById(id).classList.add('active'); 
 }
 window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); }
+
+window.calcTotal = function() {
+  const r = parseFloat(document.getElementById('oRepuesto').value) || 0;
+  const m = parseFloat(document.getElementById('oManoObra').value) || 0;
+  document.getElementById('oPrecio').value = r + m;
+  calcSaldo();
+}
 
 window.calcSaldo = function() {
   const p = parseFloat(document.getElementById('oPrecio').value) || 0;
@@ -365,26 +411,46 @@ window.addCli = async function() {
   closeModal('mCli'); cargarDatos();
 }
 
-window.addOrd = async function() {
+window.saveOrd = async function() {
+  const id = document.getElementById('editOrdId').value;
   const nom = document.getElementById('oNom').value.trim();
   const eq = document.getElementById('oEq').value.trim();
   if(!nom || !eq) return alert('El nombre del cliente y el equipo son obligatorios');
   try {
     let clienteId = null;
     let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
+    
     if(clienteExistente) clienteId = clienteExistente.id;
     else {
       const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('oTel').value, uid });
       clienteId = docRef.id;
     }
+    
+    const rep = parseFloat(document.getElementById('oRepuesto').value) || 0;
+    const mo = parseFloat(document.getElementById('oManoObra').value) || 0;
     const precio = parseFloat(document.getElementById('oPrecio').value) || 0;
     const sena = parseFloat(document.getElementById('oSena').value) || 0;
-    await addDoc(collection(db, 'ordenes'), {
+    
+    const data = {
       equipo: eq, falla: document.getElementById('oFalla').value, garantia: document.getElementById('oGarantia').value,
-      fecha: document.getElementById('oFecha').value, precio: precio, sena: sena, costo: precio, cli: clienteId, estado: 'recibido', uid
-    });
+      fecha: document.getElementById('oFecha').value, repuesto: rep, manoObra: mo, precio: precio, sena: sena, costo: precio, cli: clienteId, uid
+    };
+
+    if(id) await updateDoc(doc(db, 'ordenes', id), data);
+    else {
+      data.estado = 'recibido';
+      await addDoc(collection(db, 'ordenes'), data);
+    }
+    
     closeModal('mOrd'); cargarDatos();
   } catch(e) { alert("Error al guardar: " + e.message); }
+}
+
+window.deleteOrd = async function(id) {
+  if(confirm('¿Seguro que quieres borrar esta orden?')) {
+    await deleteDoc(doc(db, 'ordenes', id));
+    cargarDatos();
+  }
 }
 
 window.addVenta = async function() {
@@ -401,42 +467,86 @@ window.cambiarEstado = async function(id, nuevoEstado) {
 }
 
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
+window.waCli = function(tel) { if(tel) window.open('https://wa.me/' + tel.replace(/\D/g,'')); }
 
 window.imprimirPDF = function(id) {
   const o = D.ordenes.find(x => x.id === id);
   if(!o) return;
   const c = D.clientes.find(x => x.id == o.cli);
+  
   const win = window.open('', '_blank');
-  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:10px;">` : '';
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:8px;">` : '';
   const saldo = (o.precio || o.costo) - (o.sena || 0);
+  
+  let fechaFormat = o.fecha || '';
+  if(fechaFormat) {
+    const parts = fechaFormat.split('-');
+    if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
   win.document.write(`
-    <html><head><title>Recibo - ${o.equipo}</title>
+    <html><head><title>Comprobante - ${D.config.local}</title>
     <style>
-      body{font-family:system-ui,sans-serif; padding:30px; color:#000;}
-      h2{margin:0; font-size:24px; text-align:center;}
-      p{text-align:center; color:#666; margin-bottom:20px;}
-      .box{border:2px solid #eee; padding:20px; border-radius:12px;}
-      .row{display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:5px;}
-      .total{font-size:24px; font-weight:bold; margin-top:20px; padding-top:15px; text-align:center; border-top:2px solid #000;}
-      .saldo{font-size:18px; font-weight:bold; text-align:center; color:#d97706; margin-top:10px;}
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; padding: 40px; color: #333; line-height: 1.5; }
+      .header { text-align: center; border-bottom: 3px solid #00E5FF; padding-bottom: 20px; margin-bottom: 20px; }
+      .header h1 { color: #111; margin: 10px 0 5px; font-size: 28px; letter-spacing: -0.5px; }
+      .header p { color: #666; font-size: 14px; margin: 2px 0; }
+      .section-title { font-size: 14px; text-transform: uppercase; color: #00E5FF; font-weight: 700; margin: 25px 0 10px; letter-spacing: 1px; }
+      .details { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+      .row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0; font-size: 14px; }
+      .row:last-child { border-bottom: none; padding-bottom: 0; }
+      .row strong { color: #111; }
+      .total-section { margin-top: 20px; background: #111; color: #fff; padding: 20px; border-radius: 12px; text-align: right; }
+      .total-section h3 { margin: 0; font-size: 14px; color: #aaa; text-transform: uppercase; }
+      .total-section h2 { margin: 5px 0 0; font-size: 32px; color: #00E5FF; }
+      .saldo { font-size: 16px; color: #f59e0b; font-weight: 600; margin-top: 10px; }
+      .legal { font-size: 11px; color: #64748b; text-align: justify; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+      .footer { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px; }
+      @media print { button { display: none; } body { padding: 0; } }
     </style>
     </head><body>
-      ${logoHtml}
-      <h2>${D.config.local}</h2>
-      <p>WhatsApp: ${D.config.tel || ''} | Dirección: ${D.config.dir || ''}</p>
-      <div class="box">
-        <div class="row"><strong>Fecha:</strong> <span>${o.fecha || 'No especificada'}</span></div>
+      <div class="header">
+        ${logoHtml}
+        <h1>${D.config.local}</h1>
+        <p>📍 ${D.config.dir || 'Dirección no registrada'}</p>
+        <p>📱 WhatsApp: ${D.config.tel || 'Teléfono no registrado'}</p>
+      </div>
+
+      <div class="section-title">Detalles de la Orden</div>
+      <div class="details">
+        <div class="row"><strong>Fecha:</strong> <span>${fechaFormat || 'No especificada'}</span></div>
         <div class="row"><strong>Cliente:</strong> <span>${c ? c.nombre : 'N/A'}</span></div>
         <div class="row"><strong>Equipo:</strong> <span>${o.equipo}</span></div>
-        <div class="row"><strong>Falla:</strong> <span>${o.falla || 'No especificada'}</span></div>
+        <div class="row"><strong>Falla Reportada:</strong> <span>${o.falla || 'No especificada'}</span></div>
         <div class="row"><strong>Garantía:</strong> <span>${o.garantia || 'Sin garantía'}</span></div>
-        <div class="row"><strong>Estado:</strong> <span>${o.estado.toUpperCase()}</span></div>
-        <div class="total">TOTAL: $${o.costo}</div>
-        <div class="row" style="margin-top:10px; border:none;"><strong>Seña / Anticipo:</strong> <span>$${o.sena || 0}</span></div>
-        <div class="saldo">SALDO PENDIENTE: $${saldo > 0 ? saldo : 0}</div>
+        <div class="row"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: 700;">${o.estado}</span></div>
       </div>
+
+      <div class="section-title">Desglose de Costos</div>
+      <div class="details">
+        <div class="row"><strong>Repuesto:</strong> <span>$${o.repuesto || 0}</span></div>
+        <div class="row"><strong>Mano de Obra:</strong> <span>$${o.manoObra || 0}</span></div>
+      </div>
+
+      <div class="total-section">
+        <h3>Total del Servicio</h3>
+        <h2>$${o.costo}</h2>
+        <div class="saldo">Seña / Anticipo: $${o.sena || 0}</div>
+        <div class="saldo" style="color:#00E5FF">SALDO PENDIENTE: $${saldo > 0 ? saldo : 0}</div>
+      </div>
+
+      <div class="legal">
+        <strong>Aviso Importante:</strong> El equipo será entregado únicamente contra presentación de este comprobante. Pasados los 30 días de la fecha de ingreso, y si el equipo no ha sido retirado, el mismo pasará a ser propiedad del local para cubrir los gastos generados por el almacenamiento y el arreglo del mismo. Por favor, revise su equipo al retirarlo.
+      </div>
+      
+      <div class="footer">
+        ¡Gracias por confiar en ${D.config.local}!<br>
+        Comprobante generado digitalmente.
+      </div>
+
       <div style="text-align:center; margin-top:30px;">
-        <button onclick="window.print()" style="padding:12px 24px; background:#000; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer;">Imprimir / Guardar PDF</button>
+        <button onclick="window.print()" style="padding:14px 28px; background:#00E5FF; color:#000; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Imprimir / Guardar PDF</button>
       </div>
     </body></html>
   `);
@@ -459,6 +569,15 @@ function render() {
 
   document.getElementById('sCli').textContent = D.clientes.length;
   document.getElementById('sOrd').textContent = D.ordenes.filter(o => o.estado !== 'entregado' && o.estado !== 'rechazado').length;
+  
+  // CALCULO DE GANANCIA REAL (Solo órdenes entregadas)
+  let gananciaTotal = 0;
+  D.ordenes.filter(o => o.estado === 'entregado').forEach(o => {
+    // Ganancia = (Precio Total - Costo Repuesto)
+    gananciaTotal += ((o.precio || o.costo) - (o.repuesto || 0));
+  });
+  document.getElementById('sGanancia').textContent = '$' + gananciaTotal;
+
   document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
 
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
@@ -467,32 +586,54 @@ function render() {
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
   h = ''; D.clientes.forEach(c => {
-    h += `<div class="card"><div class="card-head"><span class="card-title">${c.nombre}</span><button class="badge" style="background:var(--neon);color:#000" onclick="window.open('https://wa.me/${c.tel.replace(/\\D/g,'')}')">WA</button></div><div style="font-size:13px;color:var(--sub)">📞 ${c.tel}</div></div>`;
+    h += `<div class="card">
+      <div class="card-head"><span class="card-title">${c.nombre}</span></div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:12px;">📞 ${c.tel}</div>
+      ${c.tel ? `<button class="btn-wa" onclick="waCli('${c.tel}')">💬 Enviar WhatsApp</button>` : ''}
+    </div>`;
   });
   document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
   
-  h = ''; D.ordenes.forEach(o => {
-    const c = D.clientes.find(x => x.id == o.cli);
-    h += `<div class="card">
-      <div class="card-head">
-        <span class="card-title">${o.equipo}</span>
-        <select class="select-estado" onchange="cambiarEstado('${o.id}', this.value)">
-          <option value="recibido" ${o.estado==='recibido'?'selected':''}>Recibido</option>
-          <option value="revisado" ${o.estado==='revisado'?'selected':''}>Revisado</option>
-          <option value="reparado" ${o.estado==='reparado'?'selected':''}>Reparado</option>
-          <option value="rechazado" ${o.estado==='rechazado'?'selected':''}>Rechazado</option>
-          <option value="entregado" ${o.estado==='entregado'?'selected':''}>Entregado</option>
-        </select>
-      </div>
-      <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${c?c.nombre:'N/A'} | 📅 ${o.fecha||''}</div>
-      <div style="font-size:12px;color:var(--sub);margin-bottom:10px;">🔧 ${o.falla || 'Sin falla registrada'}</div>
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-weight:bold;color:var(--neon)">Total: $${o.costo} ${o.sena > 0 ? `<small style="color:var(--sub)">(Seña: $${o.sena})</small>` : ''}</span>
-        <button class="btn-pdf" onclick="imprimirPDF('${o.id}')">🖨️ PDF</button>
-      </div>
-    </div>`;
-  });
-  document.getElementById('listOrd').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay órdenes</p>';
+  let listaOrd = D.ordenes;
+  if(filtroActual !== 'todas') listaOrd = listaOrd.filter(o => o.estado === filtroActual);
+  
+  h = ''; 
+  if(listaOrd.length === 0) {
+    h = '<p style="color:var(--sub);padding:0 16px;">No hay órdenes en esta categoría</p>';
+  } else {
+    listaOrd.forEach(o => {
+      const c = D.clientes.find(x => x.id == o.cli);
+      let fechaStr = 'Sin fecha';
+      if(o.fecha) {
+        const parts = o.fecha.split('-');
+        if(parts.length === 3) fechaStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        else fechaStr = o.fecha;
+      }
+      
+      let bgClass = 'bg-recibido';
+      if(o.estado === 'pendiente') bgClass = 'bg-pendiente';
+      if(o.estado === 'entregado') bgClass = 'bg-entregado';
+      if(o.estado === 'rechazado') bgClass = 'bg-rechazado';
+
+      h += `<div class="card">
+        <div class="card-head">
+          <span class="card-title">${o.equipo || 'Sin equipo'} </span>
+          <span class="badge ${bgClass}">${o.estado.toUpperCase()}</span>
+        </div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${c ? c.nombre : 'Sin cliente'}</div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px;">📅 ${fechaStr} &nbsp; 💵 $${o.costo}</div>
+        <div style="font-size:11px;color:var(--sub);">🔧 Rep: $${o.repuesto || 0} | Mano: $${o.manoObra || 0}</div>
+        
+        <div style="display:flex; gap:8px; margin-top:15px; border-top:1px solid var(--bor); padding-top:15px; flex-wrap:wrap;">
+          <button class="btn-pdf" onclick="imprimirPDF('${o.id}')">🖨️ PDF</button>
+          ${c && c.tel ? `<button class="btn-wa" onclick="waCli('${c.tel}')">💬 WA</button>` : ''}
+          <button class="btn-edit" onclick="openModal('mOrd', '${o.id}')">Editar</button>
+          <button class="btn-del" onclick="deleteOrd('${o.id}')">Borrar</button>
+        </div>
+      </div>`;
+    });
+  }
+  document.getElementById('listOrd').innerHTML = h;
   
   let totalV = 0;
   h = ''; D.ventas.forEach(v => {
