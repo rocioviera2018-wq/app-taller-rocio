@@ -5,56 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TechPro PRO</title>
 <style>
-:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --acc: #00E5FF; --bor: #222; }
-[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFFFFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --acc: #DC2626; --bor: #E2E8F0; }
-[data-theme="claro-teal"] { --bg: #F8FAFC; --card: #FFFFFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --acc: #0D9488; --bor: #E2E8F0; }
-[data-theme="oscuro-verde"] { --bg: #0F172A; --card: #1E293B; --text: #F8FAFC; --sub: #94A3B8; --prim: #10B981; --acc: #34D399; --bor: #334155; }
-[data-theme="oscuro-morado"] { --bg: #170F21; --card: #241A33; --text: #F8FAFC; --sub: #9CA3AF; --prim: #8B5CF6; --acc: #A78BFA; --bor: #3B2A52; }
+:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; }
+[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --neon: #DC2626; --bor: #E2E8F0; }
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);padding-bottom:80px}
-#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center;background:var(--bg)}
 .hidden{display:none!important}
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center}
+.btn-google{background:#FFF;color:#000;border:none;padding:12px 20px;border-radius:10px;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:300px;margin-top:20px;cursor:pointer}
 .header{padding:16px;display:flex;justify-content:space-between;align-items:center}
 .user-info{display:flex;gap:12px;align-items:center}
-.avatar{width:40px;height:40px;border-radius:50%;background:var(--card);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;font-size:20px;background-size:cover;background-position:center}
-.greeting h2{font-size:16px;font-weight:700}
-.greeting p{font-size:11px;color:var(--sub)}
-.icon-btn{background:var(--card);border:1px solid var(--bor);color:var(--text);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 16px;margin-bottom:20px}
-.stat-box{background:var(--card);padding:12px;border-radius:12px;border:1px solid var(--bor);text-align:center}
-.stat-val{font-size:18px;font-weight:700;color:var(--acc)}
-.stat-lab{font-size:10px;color:var(--sub);margin-top:4px}
-.grid-menu{display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;padding:0 16px;margin-bottom:24px}
-.menu-item{background:var(--card);border:1px solid var(--bor);border-radius:12px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
-.menu-item i{font-size:22px}
-.menu-item span{font-size:10px;color:var(--sub);font-weight:600}
-.menu-item.active{border-color:var(--acc);box-shadow:0 0 10px rgba(0,229,255,0.1)}
-.menu-item.active span{color:var(--acc)}
-.alert-box{background:rgba(255,42,85,0.1);border:1px solid var(--prim);border-radius:12px;padding:12px;margin:0 16px 20px;display:flex;align-items:center;gap:10px;cursor:pointer}
-.alert-box p{font-size:12px;color:var(--prim);font-weight:600}
-.section-title{font-size:14px;color:var(--sub);padding:0 16px;margin-bottom:10px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
-.card{background:var(--card);margin:0 16px 10px;padding:14px;border-radius:12px;border:1px solid var(--bor)}
-.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.card-title{font-weight:600;font-size:14px}
-.badge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
-.bg-pend{background:rgba(255,42,85,0.15);color:var(--prim)}
-.bg-ok{background:rgba(0,229,255,0.15);color:var(--acc)}
-.card-desc{font-size:12px;color:var(--sub);margin-bottom:4px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:10px 0 20px;z-index:100}
-.nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:20px;gap:4px;cursor:pointer;flex:1}
+/* LOGO MÁS GRANDE AQUÍ */
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--card);border:3px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:28px;background-size:cover;background-position:center}
+.greeting h2{font-size:18px;font-weight:700}
+.greeting p{font-size:12px;color:var(--sub)}
+.icon-btn{background:var(--card);border:1px solid var(--bor);color:var(--text);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:20px}
+.stat-box{background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--bor);text-align:center}
+.stat-val{font-size:22px;font-weight:700;color:var(--neon)}
+.stat-lab{font-size:11px;color:var(--sub);margin-top:4px;font-weight:600}
+.section-title{font-size:15px;color:var(--sub);padding:0 16px;margin-bottom:12px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.card{background:var(--card);margin:0 16px 12px;padding:16px;border-radius:12px;border:1px solid var(--bor)}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.card-title{font-weight:700;font-size:15px}
+.badge{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(255,42,85,0.15);color:var(--prim)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:12px 0 24px;z-index:100}
+.nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:22px;gap:4px;cursor:pointer;flex:1}
 .nav-btn span{font-size:10px;font-weight:600}
-.nav-btn.active{color:var(--acc)}
+.nav-btn.active{color:var(--neon)}
 .view{display:none;padding-top:10px}
 .view.active{display:block}
-.btn-main{background:var(--prim);color:#FFF;border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;box-shadow:0 0 15px rgba(255,42,85,0.4)}
+.btn-main{background:var(--prim);color:#FFF;border:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.btn-pdf{background:#10B981;color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
-.modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--acc)}
-.modal-cnt h3{margin-bottom:15px;font-size:18px;color:var(--acc)}
-.modal-cnt input, .modal-cnt select {width:100%;padding:12px;border:1px solid var(--bor);border-radius:8px;margin-bottom:12px;background:var(--bg);color:var(--text);font-size:14px}
+.modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--neon)}
+.modal-cnt h3{margin-bottom:15px;color:var(--neon)}
+.modal-cnt input, .modal-cnt select {width:100%;padding:14px;border:1px solid var(--bor);border-radius:10px;margin-bottom:12px;background:var(--bg);color:var(--text);font-size:14px}
 .modal-btns{display:flex;gap:10px;margin-top:10px}
 .btn-cancel{background:transparent;color:var(--sub);border:1px solid var(--bor);padding:12px;border-radius:8px;flex:1}
-.btn-save{background:var(--acc);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700;box-shadow:0 0 15px rgba(0,229,255,0.4)}
+.btn-save{background:var(--neon);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700}
 .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .theme-opt{padding:12px;border-radius:8px;border:2px solid var(--bor);cursor:pointer;text-align:center;font-size:12px;font-weight:700}
 </style>
@@ -62,9 +51,9 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 <body>
 
 <div id="login-screen">
-  <h1 style="color:var(--acc);font-size:28px;margin-bottom:10px;text-shadow:0 0 20px rgba(0,229,255,0.4)">TechPro PRO</h1>
-  <p style="color:var(--sub);margin-bottom:30px">Gestión Profesional de Taller</p>
-  <button id="google-btn" class="btn-main" style="background:#FFF;color:#000;width:100%;max-width:300px;display:flex;align-items:center;justify-content:center;gap:10px">
+  <h1 style="color:var(--neon);font-size:28px;text-shadow:0 0 20px rgba(0,229,255,0.4)">TechPro PRO</h1>
+  <p style="color:var(--sub);margin-bottom:20px">Gestión Profesional de Taller</p>
+  <button id="google-btn" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Entrar con Google
   </button>
 </div>
@@ -73,7 +62,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="header">
     <div class="user-info">
       <div class="avatar" id="logoBox">🔧</div>
-      <div class="greeting"><h2 id="hLocal">Mi Taller</h2><p id="hTec">Hola, Técnico</p></div>
+      <div class="greeting"><h2 id="hLocal">Mi Taller</h2><p id="hTec">Técnico</p></div>
     </div>
     <div style="display:flex;gap:8px">
       <button class="icon-btn" onclick="wa()">💬</button>
@@ -83,57 +72,46 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
   <main id="view-inicio" class="view active">
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-val" id="sIng">$0</div><div class="stat-lab">Ingresos</div></div>
-      <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Activas</div></div>
+      <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Órdenes</div></div>
       <div class="stat-box"><div class="stat-val" id="sCli">0</div><div class="stat-lab">Clientes</div></div>
     </div>
-    <div class="grid-menu">
-      <div class="menu-item active" onclick="nav('inicio', this)"><i>🏠</i><span>Inicio</span></div>
-      <div class="menu-item" onclick="nav('clientes', this)"><i>👥</i><span>Clientes</span></div>
-      <div class="menu-item" onclick="nav('ordenes', this)"><i>📋</i><span>Órdenes</span></div>
-      <div class="menu-item" onclick="nav('ajustes', this)"><i>⚙️</i><span>Ajustes</span></div>
-    </div>
-    <div class="alert-box" onclick="openModal('mOrd')"><p>🔥 Atención: Revisa las órdenes pendientes</p></div>
     <div class="section-title">Últimos Movimientos</div>
     <div id="listHome"></div>
   </main>
 
   <main id="view-clientes" class="view">
-    <div class="section-title">Clientes <button class="btn-main" style="padding:6px 12px;font-size:12px" onclick="openModal('mCli')">+ Nuevo</button></div>
+    <div class="section-title">Clientes <button class="btn-main" onclick="openModal('mCli')">+ Nuevo</button></div>
     <div id="listCli"></div>
   </main>
 
   <main id="view-ordenes" class="view">
-    <div class="section-title">Órdenes <button class="btn-main" style="padding:6px 12px;font-size:12px" onclick="openModal('mOrd')">+ Nueva</button></div>
+    <div class="section-title">Órdenes <button class="btn-main" onclick="openModal('mOrd')">+ Nueva</button></div>
     <div id="listOrd"></div>
   </main>
 
   <main id="view-ajustes" class="view">
     <div class="section-title">Datos del Local</div>
     <div class="card">
-      <input type="text" id="inLoc" placeholder="Nombre del Local">
-      <input type="tel" id="inTel" placeholder="WhatsApp (Ej: 5491123456789)">
+      <input type="text" id="inLoc" placeholder="Nombre del Local" style="width:100%;padding:12px;margin-bottom:10px;background:var(--bg);border:1px solid var(--bor);color:#fff;border-radius:8px">
+      <input type="tel" id="inTel" placeholder="WhatsApp (549...)" style="width:100%;padding:12px;margin-bottom:10px;background:var(--bg);border:1px solid var(--bor);color:#fff;border-radius:8px">
       <label style="font-size:12px;color:var(--sub)">Subir Logo (Galería)</label>
-      <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="padding:10px;color:var(--sub)">
-      <button class="btn-main" style="width:100%;margin-top:10px" onclick="saveConf()">Guardar Datos</button>
+      <input type="file" id="inFile" accept="image/*" onchange="subirLogo(event)" style="width:100%;padding:10px;color:var(--sub);margin-bottom:10px">
+      <button class="btn-main" style="width:100%;padding:14px" onclick="saveConf()">Guardar Datos</button>
     </div>
     <div class="section-title">Tema de Colores</div>
     <div class="card">
       <div class="theme-grid">
         <div class="theme-opt" style="background:#050505;color:#00E5FF" onclick="setTheme('alerta-pro')">Negro/Cian</div>
         <div class="theme-opt" style="background:#F8FAFC;color:#DC2626" onclick="setTheme('claro-rojo')">Claro/Rojo</div>
-        <div class="theme-opt" style="background:#F8FAFC;color:#0D9488" onclick="setTheme('claro-teal')">Claro/Teal</div>
-        <div class="theme-opt" style="background:#0F172A;color:#34D399" onclick="setTheme('oscuro-verde')">Oscuro/Verde</div>
-        <div class="theme-opt" style="background:#170F21;color:#A78BFA" onclick="setTheme('oscuro-morado')">Oscuro/Morado</div>
       </div>
     </div>
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="nav('inicio', this, true)">🏠<span>Inicio</span></button>
-    <button class="nav-btn" onclick="nav('clientes', this, true)">👥<span>Clientes</span></button>
-    <button class="nav-btn" onclick="nav('ordenes', this, true)">📋<span>Órdenes</span></button>
-    <button class="nav-btn" onclick="nav('ajustes', this, true)">⚙️<span>Ajustes</span></button>
+    <button class="nav-btn active" onclick="nav('inicio', this)">🏠<span>Inicio</span></button>
+    <button class="nav-btn" onclick="nav('clientes', this)">👥<span>Clientes</span></button>
+    <button class="nav-btn" onclick="nav('ordenes', this)">📋<span>Órdenes</span></button>
+    <button class="nav-btn" onclick="nav('ajustes', this)">⚙️<span>Ajustes</span></button>
   </nav>
 </div>
 
@@ -154,7 +132,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -174,14 +152,14 @@ const provider = new GoogleAuthProvider();
 let D = { config: { local: 'Mi Taller', tel: '', logo: '' }, clientes: [], ordenes: [] };
 let uid = null;
 
-document.getElementById('google-btn').onclick = () => signInWithPopup(auth, provider).catch(e => alert(e.message));
+document.getElementById('google-btn').onclick = () => signInWithPopup(auth, provider).catch(e => alert("Error: " + e.message));
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     uid = user.uid;
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app-screen').classList.remove('hidden');
-    document.getElementById('hTec').textContent = 'Hola, ' + user.displayName.split(' ')[0];
+    document.getElementById('hTec').textContent = 'Hola, ' + (user.displayName ? user.displayName.split(' ')[0] : 'Técnico');
     await cargarDatos();
   } else {
     document.getElementById('login-screen').classList.remove('hidden');
@@ -192,62 +170,100 @@ onAuthStateChanged(auth, async (user) => {
 function logout() { signOut(auth); }
 
 async function cargarDatos() {
-  const cfg = await getDoc(doc(db, 'config', uid));
-  if (cfg.exists()) D.config = cfg.data();
-  
-  D.clientes = (await getDocs(query(collection(db, 'clientes'), where("uid", "==", uid)))).docs.map(d => ({ id: d.id, ...d.data() }));
-  D.ordenes = (await getDocs(query(collection(db, 'ordenes'), where("uid", "==", uid)))).docs.map(d => ({ id: d.id, ...d.data() }));
-  render();
+  try {
+    const cfg = await getDoc(doc(db, 'config', uid));
+    if (cfg.exists()) D.config = cfg.data();
+    
+    const allCli = (await getDocs(collection(db, 'clientes'))).docs.map(d => ({ id: d.id, ...d.data() }));
+    D.clientes = allCli.filter(c => c.uid === uid);
+    
+    const allOrd = (await getDocs(collection(db, 'ordenes'))).docs.map(d => ({ id: d.id, ...d.data() }));
+    D.ordenes = allOrd.filter(o => o.uid === uid);
+    
+    render();
+  } catch(e) {
+    console.error(e);
+    alert("Error al cargar: " + e.message);
+  }
 }
 
-function nav(id, el, bottom=false) {
+window.nav = function(id, el) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if(bottom) el.classList.add('active');
-  else {
-    let idx = ['inicio','clientes','ordenes','ajustes'].indexOf(id);
-    if(idx >= 0) document.querySelectorAll('.nav-btn')[idx].classList.add('active');
-  }
+  el.classList.add('active');
   render();
 }
 
-function openModal(id){ document.getElementById(id).classList.add('active'); }
-function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+window.openModal = function(id){ document.getElementById(id).classList.add('active'); }
+window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); }
 
-function setTheme(t) {
+window.setTheme = function(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('theme', t);
 }
 setTheme(localStorage.getItem('theme') || 'alerta-pro');
 
-function subirLogo(e) {
+window.subirLogo = function(e) {
   const r = new FileReader(); r.onload = ev => { D.config.logo = ev.target.result; render(); }; r.readAsDataURL(e.target.files[0]);
 }
 
-async function saveConf() {
+window.saveConf = async function() {
   D.config.local = document.getElementById('inLoc').value || 'Mi Taller';
   D.config.tel = document.getElementById('inTel').value;
   await setDoc(doc(db, 'config', uid), D.config, { merge: true });
-  alert('Ajustes guardados');
+  alert('Ajustes guardados con éxito');
   render();
 }
 
-async function addCli() {
+window.addCli = async function() {
   const n = document.getElementById('cNom').value;
-  if(!n) return alert('Falta nombre');
+  if(!n) return alert('Falta el nombre');
   await addDoc(collection(db, 'clientes'), { nombre: n, tel: document.getElementById('cTel').value, uid });
   closeModal('mCli'); cargarDatos();
 }
 
-async function addOrd() {
+window.addOrd = async function() {
   const e = document.getElementById('oEq').value;
-  if(!e) return alert('Falta equipo');
+  if(!e) return alert('Falta el equipo');
   await addDoc(collection(db, 'ordenes'), { equipo: e, costo: parseFloat(document.getElementById('oCos').value)||0, cli: document.getElementById('oCli').value, estado: 'pendiente', uid });
   closeModal('mOrd'); cargarDatos();
 }
 
-function wa() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
+window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
+
+// NUEVA FUNCIÓN PDF
+window.imprimirPDF = function(id) {
+  const o = D.ordenes.find(x => x.id === id);
+  if(!o) return;
+  const c = D.clientes.find(x => x.id == o.cli);
+  
+  const win = window.open('', '_blank');
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:10px;">` : '';
+  
+  win.document.write(`
+    <html><head><title>Recibo - ${o.equipo}</title>
+    <style>
+      body{font-family:system-ui,sans-serif; padding:30px; text-align:center; color:#000;}
+      h2{margin:0; font-size:24px;}
+      .box{border:2px solid #eee; padding:20px; margin-top:20px; text-align:left; border-radius:12px;}
+      .total{font-size:24px; font-weight:bold; margin-top:20px; border-top:2px solid #000; padding-top:15px; text-align:center;}
+    </style>
+    </head><body>
+      ${logoHtml}
+      <h2>${D.config.local}</h2>
+      <p style="color:#666;">WhatsApp: ${D.config.tel || ''}</p>
+      <div class="box">
+        <p><strong>Equipo:</strong> ${o.equipo}</p>
+        <p><strong>Cliente:</strong> ${c ? c.nombre : 'Sin cliente'}</p>
+        <p><strong>Estado:</strong> ${o.estado.toUpperCase()}</p>
+        <div class="total">TOTAL: $${o.costo}</div>
+      </div>
+      <button onclick="window.print()" style="margin-top:30px; padding:12px 24px; background:#000; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer;">Imprimir / Guardar PDF</button>
+    </body></html>
+  `);
+  win.document.close();
+}
 
 function render() {
   if(!uid) return;
@@ -261,21 +277,25 @@ function render() {
   }
 
   document.getElementById('sCli').textContent = D.clientes.length;
-  document.getElementById('sOrd').textContent = D.ordenes.filter(o=>o.estado!=='entregado').length;
+  document.getElementById('sOrd').textContent = D.ordenes.length;
   
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
-    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-pend">${o.estado}</span></div><div class="card-desc">💵 $${o.costo}</div></div>`;
+    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
   });
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
   h = ''; D.clientes.forEach(c => {
-    h += `<div class="card"><div class="card-head"><span class="card-title">${c.nombre}</span><button class="badge bg-ok" onclick="window.open('https://wa.me/${c.tel.replace(/\\D/g,'')}')">WA</button></div><div class="card-desc">📞 ${c.tel}</div></div>`;
+    h += `<div class="card"><div class="card-head"><span class="card-title">${c.nombre}</span><button class="badge" style="background:var(--neon);color:#000" onclick="window.open('https://wa.me/${c.tel.replace(/\\D/g,'')}')">WA</button></div><div style="font-size:13px;color:var(--sub)">📞 ${c.tel}</div></div>`;
   });
   document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
   
   h = ''; D.ordenes.forEach(o => {
     const c = D.clientes.find(x => x.id == o.cli);
-    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-pend">${o.estado}</span></div><div class="card-desc">👤 ${c?c.nombre:'N/A'} | 💵 $${o.costo}</div></div>`;
+    h += `<div class="card">
+      <div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge">${o.estado}</span></div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:10px;">👤 ${c?c.nombre:'N/A'} | 💵 $${o.costo}</div>
+      <button class="btn-pdf" onclick="imprimirPDF('${o.id}')">🖨️ Imprimir / PDF</button>
+    </div>`;
   });
   document.getElementById('listOrd').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay órdenes</p>';
   
