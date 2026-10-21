@@ -47,6 +47,9 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .btn-del{background:rgba(255,42,85,0.1);color:var(--prim);border:1px solid var(--prim);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .btn-wa{background:rgba(37,211,102,0.1);color:var(--wa);border:1px solid var(--wa);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 
+/* BOTÓN AGREGAR NUEVO CLIENTE */
+.btn-add-cli{background:transparent; border:1px dashed var(--neon); color:var(--neon); width:100%; padding:12px; border-radius:10px; margin-bottom:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-between;padding:10px 0 20px;z-index:100}
 .nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:18px;gap:2px;cursor:pointer;flex:1; padding: 0 2px;}
 .nav-btn span{font-size:8px;font-weight:600; text-align:center;}
@@ -188,20 +191,21 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
-<!-- MODAL HISTORIAL -->
 <div id="mHistorial" class="modal"><div class="modal-cnt">
   <h3 id="tituloHistorial">Historial del Cliente</h3>
   <div id="historialContent" style="max-height: 60vh; overflow-y: auto;"></div>
   <div class="modal-btns"><button class="btn-save" onclick="closeModal('mHistorial')">Cerrar</button></div>
 </div></div>
 
-<!-- MODAL ORDEN CON SELECT DE CLIENTES -->
+<!-- MODAL ORDEN CON SEPARACIÓN DE CLIENTE -->
 <div id="mOrd" class="modal"><div class="modal-cnt">
   <h3 id="tituloModOrd">Nueva Orden</h3>
   <input type="hidden" id="editOrdId">
   
   <label style="font-size:11px;color:var(--sub)">Cliente *</label>
-  <select id="oClienteSelect" onchange="toggleNuevoCliente('o')"></select>
+  <select id="oClienteSelect" onchange="ocultarNuevoCliente('o')"></select>
+  
+  <button type="button" class="btn-add-cli" onclick="toggleNuevoCliente('o')">+ Agregar Nuevo Cliente</button>
   
   <div id="oNuevoClienteDiv" class="hidden" style="background:var(--bg); padding:10px; border-radius:10px; border:1px dashed var(--neon); margin-bottom:10px;">
     <input type="text" id="oNom" placeholder="Nombre del nuevo cliente">
@@ -232,13 +236,15 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="saveOrd()">Guardar Orden</button></div>
 </div></div>
 
-<!-- MODAL VENTA CON SELECT DE CLIENTES -->
+<!-- MODAL VENTA CON SEPARACIÓN DE CLIENTE -->
 <div id="mVent" class="modal"><div class="modal-cnt">
   <h3>Nueva Venta</h3>
   
   <label style="font-size:11px;color:var(--sub)">Cliente *</label>
-  <select id="vClienteSelect" onchange="toggleNuevoCliente('v')"></select>
+  <select id="vClienteSelect" onchange="ocultarNuevoCliente('v')"></select>
   
+  <button type="button" class="btn-add-cli" onclick="toggleNuevoCliente('v')">+ Agregar Nuevo Cliente</button>
+
   <div id="vNuevoClienteDiv" class="hidden" style="background:var(--bg); padding:10px; border-radius:10px; border:1px dashed var(--neon); margin-bottom:10px;">
     <input type="text" id="vNom" placeholder="Nombre del nuevo cliente">
     <input type="tel" id="vTel" placeholder="Teléfono del nuevo cliente">
@@ -387,20 +393,26 @@ window.filtrarOrd = function(f, el) {
   render();
 }
 
-// LLENAR SELECTS Y MOSTRAR/OCULTAR CAMPOS NUEVOS
 window.llenarSelects = function() {
   const opt = `<option value="">-- Seleccionar Cliente --</option>` + 
-              D.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('') +
-              `<option value="new" style="color:var(--neon); font-weight:bold;">+ Agregar Nuevo Cliente</option>`;
+              D.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
   document.getElementById('oClienteSelect').innerHTML = opt;
   document.getElementById('vClienteSelect').innerHTML = opt;
 }
 
 window.toggleNuevoCliente = function(prefix) {
-  const val = document.getElementById(prefix + 'ClienteSelect').value;
   const div = document.getElementById(prefix + 'NuevoClienteDiv');
-  if(val === 'new') div.classList.remove('hidden');
-  else div.classList.add('hidden');
+  const select = document.getElementById(prefix + 'ClienteSelect');
+  if (div.classList.contains('hidden')) {
+    div.classList.remove('hidden');
+    select.value = ""; // Limpiar selección del select
+  } else {
+    div.classList.add('hidden');
+  }
+}
+
+window.ocultarNuevoCliente = function(prefix) {
+  document.getElementById(prefix + 'NuevoClienteDiv').classList.add('hidden');
 }
 
 window.openModal = function(id, editId = null){ 
@@ -412,7 +424,7 @@ window.openModal = function(id, editId = null){
       document.getElementById('tituloModOrd').textContent = "Editar Orden";
       document.getElementById('editOrdId').value = o.id;
       document.getElementById('oClienteSelect').value = o.cli || '';
-      document.getElementById('oClienteSelect').disabled = true; // No cambiar cliente al editar
+      document.getElementById('oClienteSelect').disabled = true;
       document.getElementById('oNuevoClienteDiv').classList.add('hidden');
       
       document.getElementById('oFecha').value = o.fecha;
@@ -528,15 +540,16 @@ window.addCli = async function() {
 window.saveOrd = async function() {
   const id = document.getElementById('editOrdId').value;
   const cliVal = document.getElementById('oClienteSelect').value;
+  const esNuevo = !document.getElementById('oNuevoClienteDiv').classList.contains('hidden');
   const eq = document.getElementById('oEq').value.trim();
   
-  if(!cliVal || !eq) return alert('Cliente y equipo son obligatorios');
+  if(!esNuevo && !cliVal) return alert('Selecciona un cliente');
+  if(!eq) return alert('El equipo es obligatorio');
   
   try {
     let clienteId = cliVal;
 
-    // Si es nuevo cliente, lo creamos primero
-    if(cliVal === 'new') {
+    if(esNuevo) {
       const nom = document.getElementById('oNom').value.trim();
       if(!nom) return alert('Escribe el nombre del nuevo cliente');
       const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('oTel').value, uid });
@@ -583,17 +596,19 @@ window.addPres = async function() {
 
 window.addVenta = async function() {
   const cliVal = document.getElementById('vClienteSelect').value;
+  const esNuevo = !document.getElementById('vNuevoClienteDiv').classList.contains('hidden');
   const prod = document.getElementById('vProd').value.trim();
   const prec = parseFloat(document.getElementById('vPrec').value);
   
-  if(!cliVal || !prod || !prec) return alert('Completa cliente, producto y precio');
+  if(!esNuevo && !cliVal) return alert('Selecciona un cliente');
+  if(!prod || !prec) return alert('Completa producto y precio');
   
   try {
     let clienteId = cliVal;
     let nombreCli = '';
     let telCli = '';
 
-    if(cliVal === 'new') {
+    if(esNuevo) {
       const nom = document.getElementById('vNom').value.trim();
       if(!nom) return alert('Escribe el nombre del nuevo cliente');
       const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('vTel').value, uid });
@@ -644,7 +659,6 @@ window.cambiarEstado = async function(id, nuevoEstado) {
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
 window.waCli = function(tel) { if(tel) window.open('https://wa.me/' + tel.replace(/\D/g,'')); }
 
-// VER HISTORIAL DEL CLIENTE
 window.verHistorial = function(cliId) {
   const c = D.clientes.find(x => x.id === cliId);
   if(!c) return;
@@ -1116,7 +1130,6 @@ function render() {
   });
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
-  // RENDER CLIENTES CON BOTÓN HISTORIAL
   h = ''; D.clientes.forEach(c => {
     h += `<div class="card">
       <div class="card-head"><span class="card-title">${c.nombre}</span></div>
