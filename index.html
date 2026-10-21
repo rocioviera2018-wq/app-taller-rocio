@@ -26,7 +26,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .card{background:var(--card);margin:0 16px 12px;padding:16px;border-radius:12px;border:1px solid var(--bor)}
 .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .card-title{font-weight:700;font-size:15px}
-.badge{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(255,42,85,0.15);color:var(--prim)}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:12px 0 24px;z-index:100}
 .nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:22px;gap:4px;cursor:pointer;flex:1}
 .nav-btn span{font-size:10px;font-weight:600}
@@ -45,6 +44,15 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .btn-save{background:var(--neon);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700}
 .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .theme-opt{padding:12px;border-radius:8px;border:2px solid var(--bor);cursor:pointer;text-align:center;font-size:12px;font-weight:700}
+
+/* NUEVOS ESTADOS CON COLORES */
+.badge{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+.bg-recibido{background:rgba(0,229,255,0.15);color:var(--neon)}
+.bg-revisado{background:rgba(245,158,11,0.15);color:#F59E0B}
+.bg-reparado{background:rgba(16,185,129,0.15);color:#10B981}
+.bg-rechazado{background:rgba(255,42,85,0.15);color:var(--prim)}
+.bg-entregado{background:rgba(139,92,246,0.15);color:#8B5CF6}
+.select-estado{background:var(--bg);color:var(--text);border:1px solid var(--bor);padding:6px;border-radius:8px;font-size:12px;font-weight:700;outline:none}
 </style>
 </head>
 <body>
@@ -71,7 +79,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
   <main id="view-inicio" class="view active">
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Órdenes</div></div>
+      <div class="stat-box"><div class="stat-val" id="sOrd">0</div><div class="stat-lab">Órdenes Activas</div></div>
       <div class="stat-box"><div class="stat-val" id="sCli">0</div><div class="stat-lab">Clientes</div></div>
     </div>
     <div class="section-title">Últimos Movimientos</div>
@@ -114,7 +122,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </nav>
 </div>
 
-<!-- MODAL CLIENTE (Manual) -->
 <div id="mCli" class="modal"><div class="modal-cnt">
   <h3>Nuevo Cliente</h3>
   <input type="text" id="cNom" placeholder="Nombre completo">
@@ -122,7 +129,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
-<!-- MODAL ORDEN (Completo) -->
 <div id="mOrd" class="modal"><div class="modal-cnt">
   <h3>Nueva Orden de Servicio</h3>
   
@@ -150,7 +156,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -215,9 +221,7 @@ window.nav = function(id, el) {
 
 window.openModal = function(id){ 
   if(id === 'mOrd') {
-    // Poner fecha de hoy por defecto
     document.getElementById('oFecha').valueAsDate = new Date();
-    // Limpiar campos
     document.getElementById('oNom').value = '';
     document.getElementById('oTel').value = '';
     document.getElementById('oEq').value = '';
@@ -253,7 +257,6 @@ window.addCli = async function() {
   closeModal('mCli'); cargarDatos();
 }
 
-// LÓGICA DE GUARDAR ORDEN (Con auto-guardado de cliente)
 window.addOrd = async function() {
   const nom = document.getElementById('oNom').value.trim();
   const tel = document.getElementById('oTel').value.trim();
@@ -266,23 +269,16 @@ window.addOrd = async function() {
   if(!nom || !eq) return alert('El nombre del cliente y el equipo son obligatorios');
 
   try {
-    // 1. Buscar si el cliente ya existe en la lista
     let clienteId = null;
     let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
 
     if(clienteExistente) {
       clienteId = clienteExistente.id;
-      // Si el cliente existía pero no tenía teléfono, lo actualizamos
-      if(tel && !clienteExistente.tel) {
-         // (Opcional, podríamos actualizar en BD)
-      }
     } else {
-      // 2. Si no existe, lo creamos en la base de datos de clientes
       const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: tel, uid });
       clienteId = docRef.id;
     }
 
-    // 3. Guardar la orden con todos los datos
     await addDoc(collection(db, 'ordenes'), {
       equipo: eq,
       falla: falla,
@@ -290,7 +286,7 @@ window.addOrd = async function() {
       fecha: fecha,
       costo: costo,
       cli: clienteId,
-      estado: 'pendiente',
+      estado: 'recibido', // ESTADO INICIAL POR DEFECTO
       uid
     });
 
@@ -301,9 +297,18 @@ window.addOrd = async function() {
   }
 }
 
+// NUEVA FUNCIÓN PARA CAMBIAR EL ESTADO RÁPIDO
+window.cambiarEstado = async function(id, nuevoEstado) {
+  try {
+    await updateDoc(doc(db, 'ordenes', id), { estado: nuevoEstado });
+    cargarDatos();
+  } catch(e) {
+    alert("Error al cambiar estado: " + e.message);
+  }
+}
+
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
 
-// NUEVA FUNCIÓN PDF MEJORADA
 window.imprimirPDF = function(id) {
   const o = D.ordenes.find(x => x.id === id);
   if(!o) return;
@@ -333,6 +338,7 @@ window.imprimirPDF = function(id) {
         <div class="row"><strong>Equipo:</strong> <span>${o.equipo}</span></div>
         <div class="row"><strong>Falla reportada:</strong> <span>${o.falla || 'No especificada'}</span></div>
         <div class="row"><strong>Garantía:</strong> <span>${o.garantia || 'Sin garantía'}</span></div>
+        <div class="row"><strong>Estado Actual:</strong> <span>${o.estado.toUpperCase()}</span></div>
         <div class="total">TOTAL: $${o.costo}</div>
       </div>
       <div style="text-align:center; margin-top:30px;">
@@ -355,13 +361,13 @@ function render() {
   }
 
   document.getElementById('sCli').textContent = D.clientes.length;
-  document.getElementById('sOrd').textContent = D.ordenes.length;
+  // Contar solo las que no están entregadas ni rechazadas como activas
+  document.getElementById('sOrd').textContent = D.ordenes.filter(o => o.estado !== 'entregado' && o.estado !== 'rechazado').length;
   
-  // Autocompletado de clientes en el modal de órdenes
   document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
 
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
-    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
+    h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-${o.estado}">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
   });
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
@@ -370,10 +376,21 @@ function render() {
   });
   document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
   
+  // RENDERIZADO DE ÓRDENES CON SELECTOR DE ESTADO
   h = ''; D.ordenes.forEach(o => {
     const c = D.clientes.find(x => x.id == o.cli);
     h += `<div class="card">
-      <div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge">${o.estado}</span></div>
+      <div class="card-head">
+        <span class="card-title">${o.equipo}</span>
+        <!-- SELECTOR DE ESTADO RÁPIDO -->
+        <select class="select-estado" onchange="cambiarEstado('${o.id}', this.value)">
+          <option value="recibido" ${o.estado==='recibido'?'selected':''}>Recibido</option>
+          <option value="revisado" ${o.estado==='revisado'?'selected':''}>Revisado</option>
+          <option value="reparado" ${o.estado==='reparado'?'selected':''}>Reparado</option>
+          <option value="rechazado" ${o.estado==='rechazado'?'selected':''}>Rechazado</option>
+          <option value="entregado" ${o.estado==='entregado'?'selected':''}>Entregado</option>
+        </select>
+      </div>
       <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${c?c.nombre:'N/A'} | 📅 ${o.fecha||''}</div>
       <div style="font-size:12px;color:var(--sub);margin-bottom:10px;">🔧 ${o.falla || 'Sin falla registrada'}</div>
       <div style="display:flex; justify-content:space-between; align-items:center;">
