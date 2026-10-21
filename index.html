@@ -40,6 +40,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .view.active{display:block}
 .btn-main{background:var(--prim);color:#FFF;border:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
 .btn-pdf{background:var(--ok);color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-danger{background:rgba(255,42,85,0.1);color:var(--prim);border:1px solid var(--prim);padding:14px;border-radius:10px;width:100%;font-weight:700;font-size:15px;cursor:pointer;margin-top:20px}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
 .modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--neon);max-height:90vh;overflow-y:auto}
@@ -122,6 +123,11 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
         <div class="theme-opt" style="background:#F8FAFC;color:#DC2626" onclick="setTheme('claro-rojo')">Claro/Rojo</div>
       </div>
     </div>
+    
+    <!-- NUEVO BOTÓN DE CERRAR SESIÓN -->
+    <div style="padding: 0 16px; margin-bottom: 30px;">
+      <button class="btn-danger" onclick="logout()">🚪 Cerrar Sesión</button>
+    </div>
   </main>
 
   <nav class="bottom-nav">
@@ -133,7 +139,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   </nav>
 </div>
 
-<!-- MODAL CLIENTE -->
 <div id="mCli" class="modal"><div class="modal-cnt">
   <h3>Nuevo Cliente</h3>
   <input type="text" id="cNom" placeholder="Nombre completo">
@@ -141,14 +146,11 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
-<!-- MODAL ORDEN (CON CALCULADORA) -->
 <div id="mOrd" class="modal"><div class="modal-cnt">
   <h3>Nueva Orden de Servicio</h3>
-  
   <input type="text" id="oNom" placeholder="Nombre del Cliente" list="listaClientes" required>
   <datalist id="listaClientes"></datalist>
   <input type="tel" id="oTel" placeholder="Teléfono (Opcional)">
-  
   <input type="date" id="oFecha" required>
   <input type="text" id="oEq" placeholder="Equipo (Ej: iPhone 13)">
   <textarea id="oFalla" placeholder="Problema / Falla" rows="2"></textarea>
@@ -157,7 +159,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
     <option value="60 días">Garantía de 60 días</option>
     <option value="1 año">Garantía de 1 año</option>
   </select>
-  
   <div style="display:flex; gap:10px;">
     <div style="flex:1;">
       <label style="font-size:11px;color:var(--sub)">Precio Total</label>
@@ -168,16 +169,12 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
       <input type="number" id="oSena" placeholder="0" oninput="calcSaldo()">
     </div>
   </div>
-  
-  <!-- CALCULADORA AUTOMÁTICA -->
   <div id="displaySaldo" style="background:var(--bg); border:1px dashed var(--neon); padding:10px; border-radius:8px; text-align:center; margin-bottom:10px; font-weight:700; color:var(--neon); display:none;">
     Saldo pendiente: $<span id="valSaldo">0</span>
   </div>
-  
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="addOrd()">Guardar Orden</button></div>
 </div></div>
 
-<!-- MODAL VENTA -->
 <div id="mVent" class="modal"><div class="modal-cnt">
   <h3>Nueva Venta</h3>
   <input type="text" id="vProd" placeholder="Producto / Accesorio">
@@ -223,7 +220,8 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-function logout() { signOut(auth); }
+// CONECTAR CERRAR SESIÓN AL HTML
+window.logout = function() { signOut(auth); };
 
 async function cargarDatos() {
   try {
@@ -268,12 +266,10 @@ window.openModal = function(id){
 }
 window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); }
 
-// CALCULADORA AUTOMÁTICA
 window.calcSaldo = function() {
   const p = parseFloat(document.getElementById('oPrecio').value) || 0;
   const s = parseFloat(document.getElementById('oSena').value) || 0;
   const saldo = p - s;
-  
   if(p > 0) {
     document.getElementById('displaySaldo').style.display = 'block';
     document.getElementById('valSaldo').textContent = saldo > 0 ? saldo : 0;
@@ -333,7 +329,7 @@ window.addOrd = async function() {
       fecha: document.getElementById('oFecha').value,
       precio: precio,
       sena: sena,
-      costo: precio, // Mantuve 'costo' por compatibilidad
+      costo: precio,
       cli: clienteId,
       estado: 'recibido',
       uid
@@ -350,10 +346,7 @@ window.addVenta = async function() {
   const p = document.getElementById('vProd').value.trim();
   const pr = parseFloat(document.getElementById('vPrec').value);
   if(!p || !pr) return alert('Complete producto y precio');
-  
-  await addDoc(collection(db, 'ventas'), {
-    producto: p, precio: pr, fecha: document.getElementById('vFecha').value, uid
-  });
+  await addDoc(collection(db, 'ventas'), { producto: p, precio: pr, fecha: document.getElementById('vFecha').value, uid });
   closeModal('mVent'); cargarDatos();
 }
 
@@ -371,8 +364,6 @@ window.imprimirPDF = function(id) {
   
   const win = window.open('', '_blank');
   const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:10px;">` : '';
-  
-  // CALCULO DE SALDO EN PDF
   const saldo = (o.precio || o.costo) - (o.sena || 0);
   
   win.document.write(`
@@ -397,7 +388,6 @@ window.imprimirPDF = function(id) {
         <div class="row"><strong>Falla:</strong> <span>${o.falla || 'No especificada'}</span></div>
         <div class="row"><strong>Garantía:</strong> <span>${o.garantia || 'Sin garantía'}</span></div>
         <div class="row"><strong>Estado:</strong> <span>${o.estado.toUpperCase()}</span></div>
-        
         <div class="total">TOTAL: $${o.costo}</div>
         <div class="row" style="margin-top:10px; border:none;"><strong>Seña / Anticipo:</strong> <span>$${o.sena || 0}</span></div>
         <div class="saldo">SALDO PENDIENTE: $${saldo > 0 ? saldo : 0}</div>
@@ -426,19 +416,16 @@ function render() {
   
   document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
 
-  // Render Home
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
     h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-${o.estado}">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
   });
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
-  // Render Clientes
   h = ''; D.clientes.forEach(c => {
     h += `<div class="card"><div class="card-head"><span class="card-title">${c.nombre}</span><button class="badge" style="background:var(--neon);color:#000" onclick="window.open('https://wa.me/${c.tel.replace(/\\D/g,'')}')">WA</button></div><div style="font-size:13px;color:var(--sub)">📞 ${c.tel}</div></div>`;
   });
   document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
   
-  // Render Ordenes
   h = ''; D.ordenes.forEach(o => {
     const c = D.clientes.find(x => x.id == o.cli);
     h += `<div class="card">
@@ -462,7 +449,6 @@ function render() {
   });
   document.getElementById('listOrd').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay órdenes</p>';
   
-  // Render Ventas
   let totalV = 0;
   h = ''; D.ventas.forEach(v => {
     totalV += v.precio;
