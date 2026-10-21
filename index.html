@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TechPro PRO</title>
 <style>
-:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; }
-[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --neon: #DC2626; --bor: #E2E8F0; }
+:root { --bg: #050505; --card: #111113; --text: #FFF; --sub: #888; --prim: #FF2A55; --neon: #00E5FF; --bor: #222; --ok: #10B981; }
+[data-theme="claro-rojo"] { --bg: #F8FAFC; --card: #FFF; --text: #0F172A; --sub: #64748B; --prim: #DC2626; --neon: #DC2626; --bor: #E2E8F0; --ok: #10B981; }
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .hidden{display:none!important}
@@ -26,33 +26,34 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
 .card{background:var(--card);margin:0 16px 12px;padding:16px;border-radius:12px;border:1px solid var(--bor)}
 .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .card-title{font-weight:700;font-size:15px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:12px 0 24px;z-index:100}
-.nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:22px;gap:4px;cursor:pointer;flex:1}
-.nav-btn span{font-size:10px;font-weight:600}
+.badge{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+.bg-recibido{background:rgba(0,229,255,0.15);color:var(--neon)}
+.bg-revisado{background:rgba(245,158,11,0.15);color:#F59E0B}
+.bg-reparado{background:rgba(16,185,129,0.15);color:var(--ok)}
+.bg-rechazado{background:rgba(255,42,85,0.15);color:var(--prim)}
+.bg-entregado{background:rgba(139,92,246,0.15);color:#8B5CF6}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bor);display:flex;justify-content:space-around;padding:10px 0 20px;z-index:100}
+.nav-btn{background:none;border:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;font-size:20px;gap:2px;cursor:pointer;flex:1}
+.nav-btn span{font-size:9px;font-weight:600}
 .nav-btn.active{color:var(--neon)}
 .view{display:none;padding-top:10px}
 .view.active{display:block}
 .btn-main{background:var(--prim);color:#FFF;border:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
-.btn-pdf{background:#10B981;color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-pdf{background:var(--ok);color:#FFF;border:none;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
 .modal.active{display:flex}
 .modal-cnt{background:var(--card);width:100%;max-width:600px;padding:24px;border-radius:24px 24px 0 0;border-top:2px solid var(--neon);max-height:90vh;overflow-y:auto}
 .modal-cnt h3{margin-bottom:15px;color:var(--neon)}
-.modal-cnt input, .modal-cnt select, .modal-cnt textarea {width:100%;padding:14px;border:1px solid var(--bor);border-radius:10px;margin-bottom:12px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+.modal-cnt input, .modal-cnt select, .modal-cnt textarea {width:100%;padding:12px;border:1px solid var(--bor);border-radius:10px;margin-bottom:10px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
 .modal-btns{display:flex;gap:10px;margin-top:10px}
 .btn-cancel{background:transparent;color:var(--sub);border:1px solid var(--bor);padding:12px;border-radius:8px;flex:1}
 .btn-save{background:var(--neon);color:#000;border:none;padding:12px;border-radius:8px;flex:1;font-weight:700}
 .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .theme-opt{padding:12px;border-radius:8px;border:2px solid var(--bor);cursor:pointer;text-align:center;font-size:12px;font-weight:700}
-
-/* NUEVOS ESTADOS CON COLORES */
-.badge{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
-.bg-recibido{background:rgba(0,229,255,0.15);color:var(--neon)}
-.bg-revisado{background:rgba(245,158,11,0.15);color:#F59E0B}
-.bg-reparado{background:rgba(16,185,129,0.15);color:#10B981}
-.bg-rechazado{background:rgba(255,42,85,0.15);color:var(--prim)}
-.bg-entregado{background:rgba(139,92,246,0.15);color:#8B5CF6}
 .select-estado{background:var(--bg);color:var(--text);border:1px solid var(--bor);padding:6px;border-radius:8px;font-size:12px;font-weight:700;outline:none}
+.total-box{background:var(--card);margin:20px 16px;padding:20px;border-radius:12px;border:1px solid var(--ok);text-align:center;box-shadow:0 0 15px rgba(16,185,129,0.1)}
+.total-box h3{color:var(--sub);font-size:14px;margin-bottom:5px}
+.total-box p{font-size:28px;font-weight:800;color:var(--ok)}
 </style>
 </head>
 <body>
@@ -96,6 +97,15 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
     <div id="listOrd"></div>
   </main>
 
+  <main id="view-ventas" class="view">
+    <div class="section-title">Ventas de Accesorios <button class="btn-main" onclick="openModal('mVent')">+ Venta</button></div>
+    <div class="total-box">
+      <h3>Total Recaudado en Ventas</h3>
+      <p id="totalVentas">$0</p>
+    </div>
+    <div id="listVentas"></div>
+  </main>
+
   <main id="view-ajustes" class="view">
     <div class="section-title">Datos del Local</div>
     <div class="card">
@@ -118,10 +128,12 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
     <button class="nav-btn active" onclick="nav('inicio', this)">🏠<span>Inicio</span></button>
     <button class="nav-btn" onclick="nav('clientes', this)">👥<span>Clientes</span></button>
     <button class="nav-btn" onclick="nav('ordenes', this)">📋<span>Órdenes</span></button>
+    <button class="nav-btn" onclick="nav('ventas', this)">💰<span>Ventas</span></button>
     <button class="nav-btn" onclick="nav('ajustes', this)">⚙️<span>Ajustes</span></button>
   </nav>
 </div>
 
+<!-- MODAL CLIENTE -->
 <div id="mCli" class="modal"><div class="modal-cnt">
   <h3>Nuevo Cliente</h3>
   <input type="text" id="cNom" placeholder="Nombre completo">
@@ -129,29 +141,49 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
+<!-- MODAL ORDEN (CON CALCULADORA) -->
 <div id="mOrd" class="modal"><div class="modal-cnt">
   <h3>Nueva Orden de Servicio</h3>
   
-  <label style="font-size:12px;color:var(--sub);margin-bottom:5px;display:block">Datos del Cliente</label>
   <input type="text" id="oNom" placeholder="Nombre del Cliente" list="listaClientes" required>
   <datalist id="listaClientes"></datalist>
-  <input type="tel" id="oTel" placeholder="Teléfono (Opcional si ya existe)">
+  <input type="tel" id="oTel" placeholder="Teléfono (Opcional)">
   
-  <label style="font-size:12px;color:var(--sub);margin-bottom:5px;display:block">Detalles del Equipo</label>
   <input type="date" id="oFecha" required>
   <input type="text" id="oEq" placeholder="Equipo (Ej: iPhone 13)">
-  <textarea id="oFalla" placeholder="Problema / Falla reportada" rows="2"></textarea>
-  
-  <label style="font-size:12px;color:var(--sub);margin-bottom:5px;display:block">Garantía y Costo</label>
+  <textarea id="oFalla" placeholder="Problema / Falla" rows="2"></textarea>
   <select id="oGarantia">
     <option value="30 días">Garantía de 30 días</option>
     <option value="60 días">Garantía de 60 días</option>
     <option value="1 año">Garantía de 1 año</option>
-    <option value="Sin garantía">Sin garantía</option>
   </select>
-  <input type="number" id="oCos" placeholder="Costo total">
+  
+  <div style="display:flex; gap:10px;">
+    <div style="flex:1;">
+      <label style="font-size:11px;color:var(--sub)">Precio Total</label>
+      <input type="number" id="oPrecio" placeholder="0" oninput="calcSaldo()">
+    </div>
+    <div style="flex:1;">
+      <label style="font-size:11px;color:var(--sub)">Seña / Anticipo</label>
+      <input type="number" id="oSena" placeholder="0" oninput="calcSaldo()">
+    </div>
+  </div>
+  
+  <!-- CALCULADORA AUTOMÁTICA -->
+  <div id="displaySaldo" style="background:var(--bg); border:1px dashed var(--neon); padding:10px; border-radius:8px; text-align:center; margin-bottom:10px; font-weight:700; color:var(--neon); display:none;">
+    Saldo pendiente: $<span id="valSaldo">0</span>
+  </div>
   
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="addOrd()">Guardar Orden</button></div>
+</div></div>
+
+<!-- MODAL VENTA -->
+<div id="mVent" class="modal"><div class="modal-cnt">
+  <h3>Nueva Venta</h3>
+  <input type="text" id="vProd" placeholder="Producto / Accesorio">
+  <input type="number" id="vPrec" placeholder="Precio">
+  <input type="date" id="vFecha">
+  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mVent')">Cancelar</button><button class="btn-save" onclick="addVenta()">Guardar Venta</button></div>
 </div></div>
 
 <script type="module">
@@ -173,7 +205,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-let D = { config: { local: 'Mi Taller', tel: '', logo: '' }, clientes: [], ordenes: [] };
+let D = { config: { local: 'Mi Taller', tel: '', logo: '' }, clientes: [], ordenes: [], ventas: [] };
 let uid = null;
 
 document.getElementById('google-btn').onclick = () => signInWithPopup(auth, provider).catch(e => alert("Error: " + e.message));
@@ -204,6 +236,9 @@ async function cargarDatos() {
     const allOrd = (await getDocs(collection(db, 'ordenes'))).docs.map(d => ({ id: d.id, ...d.data() }));
     D.ordenes = allOrd.filter(o => o.uid === uid);
     
+    const allVen = (await getDocs(collection(db, 'ventas'))).docs.map(d => ({ id: d.id, ...d.data() }));
+    D.ventas = allVen.filter(v => v.uid === uid);
+    
     render();
   } catch(e) {
     console.error(e);
@@ -222,15 +257,30 @@ window.nav = function(id, el) {
 window.openModal = function(id){ 
   if(id === 'mOrd') {
     document.getElementById('oFecha').valueAsDate = new Date();
-    document.getElementById('oNom').value = '';
-    document.getElementById('oTel').value = '';
-    document.getElementById('oEq').value = '';
-    document.getElementById('oFalla').value = '';
-    document.getElementById('oCos').value = '';
+    ['oNom','oTel','oEq','oFalla','oPrecio','oSena'].forEach(i => document.getElementById(i).value = '');
+    document.getElementById('displaySaldo').style.display = 'none';
+  }
+  if(id === 'mVent') {
+    document.getElementById('vFecha').valueAsDate = new Date();
+    ['vProd','vPrec'].forEach(i => document.getElementById(i).value = '');
   }
   document.getElementById(id).classList.add('active'); 
 }
 window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); }
+
+// CALCULADORA AUTOMÁTICA
+window.calcSaldo = function() {
+  const p = parseFloat(document.getElementById('oPrecio').value) || 0;
+  const s = parseFloat(document.getElementById('oSena').value) || 0;
+  const saldo = p - s;
+  
+  if(p > 0) {
+    document.getElementById('displaySaldo').style.display = 'block';
+    document.getElementById('valSaldo').textContent = saldo > 0 ? saldo : 0;
+  } else {
+    document.getElementById('displaySaldo').style.display = 'none';
+  }
+}
 
 window.setTheme = function(t) {
   document.documentElement.setAttribute('data-theme', t);
@@ -259,13 +309,7 @@ window.addCli = async function() {
 
 window.addOrd = async function() {
   const nom = document.getElementById('oNom').value.trim();
-  const tel = document.getElementById('oTel').value.trim();
   const eq = document.getElementById('oEq').value.trim();
-  const falla = document.getElementById('oFalla').value;
-  const garantia = document.getElementById('oGarantia').value;
-  const fecha = document.getElementById('oFecha').value;
-  const costo = parseFloat(document.getElementById('oCos').value) || 0;
-
   if(!nom || !eq) return alert('El nombre del cliente y el equipo son obligatorios');
 
   try {
@@ -275,18 +319,23 @@ window.addOrd = async function() {
     if(clienteExistente) {
       clienteId = clienteExistente.id;
     } else {
-      const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: tel, uid });
+      const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('oTel').value, uid });
       clienteId = docRef.id;
     }
 
+    const precio = parseFloat(document.getElementById('oPrecio').value) || 0;
+    const sena = parseFloat(document.getElementById('oSena').value) || 0;
+
     await addDoc(collection(db, 'ordenes'), {
       equipo: eq,
-      falla: falla,
-      garantia: garantia,
-      fecha: fecha,
-      costo: costo,
+      falla: document.getElementById('oFalla').value,
+      garantia: document.getElementById('oGarantia').value,
+      fecha: document.getElementById('oFecha').value,
+      precio: precio,
+      sena: sena,
+      costo: precio, // Mantuve 'costo' por compatibilidad
       cli: clienteId,
-      estado: 'recibido', // ESTADO INICIAL POR DEFECTO
+      estado: 'recibido',
       uid
     });
 
@@ -297,14 +346,20 @@ window.addOrd = async function() {
   }
 }
 
-// NUEVA FUNCIÓN PARA CAMBIAR EL ESTADO RÁPIDO
+window.addVenta = async function() {
+  const p = document.getElementById('vProd').value.trim();
+  const pr = parseFloat(document.getElementById('vPrec').value);
+  if(!p || !pr) return alert('Complete producto y precio');
+  
+  await addDoc(collection(db, 'ventas'), {
+    producto: p, precio: pr, fecha: document.getElementById('vFecha').value, uid
+  });
+  closeModal('mVent'); cargarDatos();
+}
+
 window.cambiarEstado = async function(id, nuevoEstado) {
-  try {
-    await updateDoc(doc(db, 'ordenes', id), { estado: nuevoEstado });
-    cargarDatos();
-  } catch(e) {
-    alert("Error al cambiar estado: " + e.message);
-  }
+  await updateDoc(doc(db, 'ordenes', id), { estado: nuevoEstado });
+  cargarDatos();
 }
 
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
@@ -317,6 +372,9 @@ window.imprimirPDF = function(id) {
   const win = window.open('', '_blank');
   const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:10px;">` : '';
   
+  // CALCULO DE SALDO EN PDF
+  const saldo = (o.precio || o.costo) - (o.sena || 0);
+  
   win.document.write(`
     <html><head><title>Recibo - ${o.equipo}</title>
     <style>
@@ -326,6 +384,7 @@ window.imprimirPDF = function(id) {
       .box{border:2px solid #eee; padding:20px; border-radius:12px;}
       .row{display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:5px;}
       .total{font-size:24px; font-weight:bold; margin-top:20px; padding-top:15px; text-align:center; border-top:2px solid #000;}
+      .saldo{font-size:18px; font-weight:bold; text-align:center; color:#d97706; margin-top:10px;}
     </style>
     </head><body>
       ${logoHtml}
@@ -334,12 +393,14 @@ window.imprimirPDF = function(id) {
       <div class="box">
         <div class="row"><strong>Fecha:</strong> <span>${o.fecha || 'No especificada'}</span></div>
         <div class="row"><strong>Cliente:</strong> <span>${c ? c.nombre : 'N/A'}</span></div>
-        <div class="row"><strong>Teléfono:</strong> <span>${c ? c.tel : 'N/A'}</span></div>
         <div class="row"><strong>Equipo:</strong> <span>${o.equipo}</span></div>
-        <div class="row"><strong>Falla reportada:</strong> <span>${o.falla || 'No especificada'}</span></div>
+        <div class="row"><strong>Falla:</strong> <span>${o.falla || 'No especificada'}</span></div>
         <div class="row"><strong>Garantía:</strong> <span>${o.garantia || 'Sin garantía'}</span></div>
-        <div class="row"><strong>Estado Actual:</strong> <span>${o.estado.toUpperCase()}</span></div>
+        <div class="row"><strong>Estado:</strong> <span>${o.estado.toUpperCase()}</span></div>
+        
         <div class="total">TOTAL: $${o.costo}</div>
+        <div class="row" style="margin-top:10px; border:none;"><strong>Seña / Anticipo:</strong> <span>$${o.sena || 0}</span></div>
+        <div class="saldo">SALDO PENDIENTE: $${saldo > 0 ? saldo : 0}</div>
       </div>
       <div style="text-align:center; margin-top:30px;">
         <button onclick="window.print()" style="padding:12px 24px; background:#000; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer;">Imprimir / Guardar PDF</button>
@@ -361,28 +422,28 @@ function render() {
   }
 
   document.getElementById('sCli').textContent = D.clientes.length;
-  // Contar solo las que no están entregadas ni rechazadas como activas
   document.getElementById('sOrd').textContent = D.ordenes.filter(o => o.estado !== 'entregado' && o.estado !== 'rechazado').length;
   
   document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
 
+  // Render Home
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
     h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-${o.estado}">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
   });
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
+  // Render Clientes
   h = ''; D.clientes.forEach(c => {
     h += `<div class="card"><div class="card-head"><span class="card-title">${c.nombre}</span><button class="badge" style="background:var(--neon);color:#000" onclick="window.open('https://wa.me/${c.tel.replace(/\\D/g,'')}')">WA</button></div><div style="font-size:13px;color:var(--sub)">📞 ${c.tel}</div></div>`;
   });
   document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
   
-  // RENDERIZADO DE ÓRDENES CON SELECTOR DE ESTADO
+  // Render Ordenes
   h = ''; D.ordenes.forEach(o => {
     const c = D.clientes.find(x => x.id == o.cli);
     h += `<div class="card">
       <div class="card-head">
         <span class="card-title">${o.equipo}</span>
-        <!-- SELECTOR DE ESTADO RÁPIDO -->
         <select class="select-estado" onchange="cambiarEstado('${o.id}', this.value)">
           <option value="recibido" ${o.estado==='recibido'?'selected':''}>Recibido</option>
           <option value="revisado" ${o.estado==='revisado'?'selected':''}>Revisado</option>
@@ -394,12 +455,21 @@ function render() {
       <div style="font-size:13px;color:var(--sub);margin-bottom:5px;">👤 ${c?c.nombre:'N/A'} | 📅 ${o.fecha||''}</div>
       <div style="font-size:12px;color:var(--sub);margin-bottom:10px;">🔧 ${o.falla || 'Sin falla registrada'}</div>
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-weight:bold;color:var(--neon)">$${o.costo}</span>
+        <span style="font-weight:bold;color:var(--neon)">Total: $${o.costo} ${o.sena > 0 ? `<small style="color:var(--sub)">(Seña: $${o.sena})</small>` : ''}</span>
         <button class="btn-pdf" onclick="imprimirPDF('${o.id}')">🖨️ PDF</button>
       </div>
     </div>`;
   });
   document.getElementById('listOrd').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay órdenes</p>';
+  
+  // Render Ventas
+  let totalV = 0;
+  h = ''; D.ventas.forEach(v => {
+    totalV += v.precio;
+    h += `<div class="card"><div class="card-head"><span class="card-title">${v.producto}</span></div><div style="display:flex; justify-content:space-between; font-size:13px; color:var(--sub);"><span>📅 ${v.fecha}</span><span style="color:var(--ok); font-weight:bold;">$${v.precio}</span></div></div>`;
+  });
+  document.getElementById('listVentas').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay ventas registradas</p>';
+  document.getElementById('totalVentas').textContent = '$' + totalV;
 }
 </script>
 </body>
