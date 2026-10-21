@@ -188,12 +188,26 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mCli')">Cancelar</button><button class="btn-save" onclick="addCli()">Guardar</button></div>
 </div></div>
 
+<!-- MODAL HISTORIAL -->
+<div id="mHistorial" class="modal"><div class="modal-cnt">
+  <h3 id="tituloHistorial">Historial del Cliente</h3>
+  <div id="historialContent" style="max-height: 60vh; overflow-y: auto;"></div>
+  <div class="modal-btns"><button class="btn-save" onclick="closeModal('mHistorial')">Cerrar</button></div>
+</div></div>
+
+<!-- MODAL ORDEN CON SELECT DE CLIENTES -->
 <div id="mOrd" class="modal"><div class="modal-cnt">
   <h3 id="tituloModOrd">Nueva Orden</h3>
   <input type="hidden" id="editOrdId">
-  <input type="text" id="oNom" placeholder="Nombre del Cliente" list="listaClientes" required>
-  <datalist id="listaClientes"></datalist>
-  <input type="tel" id="oTel" placeholder="Teléfono (Opcional)">
+  
+  <label style="font-size:11px;color:var(--sub)">Cliente *</label>
+  <select id="oClienteSelect" onchange="toggleNuevoCliente('o')"></select>
+  
+  <div id="oNuevoClienteDiv" class="hidden" style="background:var(--bg); padding:10px; border-radius:10px; border:1px dashed var(--neon); margin-bottom:10px;">
+    <input type="text" id="oNom" placeholder="Nombre del nuevo cliente">
+    <input type="tel" id="oTel" placeholder="Teléfono del nuevo cliente">
+  </div>
+
   <input type="date" id="oFecha" required>
   <input type="text" id="oEq" placeholder="Equipo (Ej: iPhone 13)">
   <textarea id="oFalla" placeholder="Problema / Falla" rows="2"></textarea>
@@ -218,49 +232,18 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mOrd')">Cancelar</button><button class="btn-save" onclick="saveOrd()">Guardar Orden</button></div>
 </div></div>
 
-<div id="mPres" class="modal"><div class="modal-cnt">
-  <h3>Nuevo Presupuesto</h3>
-  <input type="text" id="pNom" placeholder="Nombre del Cliente">
-  <input type="tel" id="pTel" placeholder="Teléfono (para enviar por WhatsApp)">
-  <input type="text" id="pEq" placeholder="Equipo / Servicio (Ej: Cambio de pantalla)">
-  <textarea id="pDet" placeholder="Detalles del presupuesto" rows="2"></textarea>
-  
-  <div style="display:flex; gap:10px;">
-    <div style="flex:1;">
-      <label style="font-size:11px;color:var(--sub)">Monto Base</label>
-      <input type="number" id="pMonto" placeholder="0" oninput="calcPresTotal()">
-    </div>
-    <div style="flex:1;">
-      <label style="font-size:11px;color:var(--sub)">Costo Envío (Opcional)</label>
-      <input type="number" id="pEnvio" placeholder="0" oninput="calcPresTotal()">
-    </div>
-  </div>
-  
-  <div style="display:flex; gap:10px; margin-bottom:10px;">
-    <div style="flex:1;">
-      <label style="font-size:11px;color:var(--sub)">Tipo de Entrega</label>
-      <select id="pTipoEnvio">
-        <option value="Retira en local">Retira en local</option>
-        <option value="Con envío (Delivery)">Con envío (Delivery)</option>
-      </select>
-    </div>
-    <div style="flex:1;">
-      <label style="font-size:11px;color:var(--sub)">Total Presupuesto</label>
-      <input type="number" id="pTotal" placeholder="0" readonly style="background:var(--bor); color:var(--neon); font-weight:bold;">
-    </div>
-  </div>
-
-  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mPres')">Cancelar</button><button class="btn-save" style="background:var(--purple); color:#fff" onclick="addPres()">Guardar Presupuesto</button></div>
-</div></div>
-
-<!-- MODAL VENTAS CON DATOS DEL CLIENTE -->
+<!-- MODAL VENTA CON SELECT DE CLIENTES -->
 <div id="mVent" class="modal"><div class="modal-cnt">
   <h3>Nueva Venta</h3>
   
-  <label style="font-size:11px;color:var(--sub)">Datos del Cliente</label>
-  <input type="text" id="vNom" placeholder="Nombre del Cliente" list="listaClientes" required>
-  <input type="tel" id="vTel" placeholder="Teléfono (Opcional)">
+  <label style="font-size:11px;color:var(--sub)">Cliente *</label>
+  <select id="vClienteSelect" onchange="toggleNuevoCliente('v')"></select>
   
+  <div id="vNuevoClienteDiv" class="hidden" style="background:var(--bg); padding:10px; border-radius:10px; border:1px dashed var(--neon); margin-bottom:10px;">
+    <input type="text" id="vNom" placeholder="Nombre del nuevo cliente">
+    <input type="tel" id="vTel" placeholder="Teléfono del nuevo cliente">
+  </div>
+
   <label style="font-size:11px;color:var(--sub)">Detalles del Producto</label>
   <input type="text" id="vProd" placeholder="Producto / Accesorio (Ej: Funda iPhone)">
   <input type="number" id="vPrec" placeholder="Precio">
@@ -268,6 +251,26 @@ body{background:var(--bg);color:var(--text);padding-bottom:80px}
   
   <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mVent')">Cancelar</button><button class="btn-save" onclick="addVenta()">Guardar Venta</button></div>
 </div></div>
+
+<div id="mPres" class="modal"><div class="modal-cnt">
+  <h3>Nuevo Presupuesto</h3>
+  <input type="text" id="pNom" placeholder="Nombre del Cliente">
+  <input type="tel" id="pTel" placeholder="Teléfono (para enviar por WhatsApp)">
+  <input type="text" id="pEq" placeholder="Equipo / Servicio">
+  <textarea id="pDet" placeholder="Detalles" rows="2"></textarea>
+  
+  <div style="display:flex; gap:10px;">
+    <div style="flex:1;"><label style="font-size:11px;color:var(--sub)">Monto Base</label><input type="number" id="pMonto" placeholder="0" oninput="calcPresTotal()"></div>
+    <div style="flex:1;"><label style="font-size:11px;color:var(--sub)">Costo Envío</label><input type="number" id="pEnvio" placeholder="0" oninput="calcPresTotal()"></div>
+  </div>
+  <div style="display:flex; gap:10px; margin-bottom:10px;">
+    <div style="flex:1;"><label style="font-size:11px;color:var(--sub)">Entrega</label><select id="pTipoEnvio"><option value="Retira en local">Retira en local</option><option value="Con envío (Delivery)">Con envío (Delivery)</option></select></div>
+    <div style="flex:1;"><label style="font-size:11px;color:var(--sub)">Total</label><input type="number" id="pTotal" readonly style="background:var(--bor); color:var(--neon); font-weight:bold;"></div>
+  </div>
+
+  <div class="modal-btns"><button class="btn-cancel" onclick="closeModal('mPres')">Cancelar</button><button class="btn-save" style="background:var(--purple); color:#fff" onclick="addPres()">Guardar</button></div>
+</div></div>
+
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -384,15 +387,34 @@ window.filtrarOrd = function(f, el) {
   render();
 }
 
+// LLENAR SELECTS Y MOSTRAR/OCULTAR CAMPOS NUEVOS
+window.llenarSelects = function() {
+  const opt = `<option value="">-- Seleccionar Cliente --</option>` + 
+              D.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('') +
+              `<option value="new" style="color:var(--neon); font-weight:bold;">+ Agregar Nuevo Cliente</option>`;
+  document.getElementById('oClienteSelect').innerHTML = opt;
+  document.getElementById('vClienteSelect').innerHTML = opt;
+}
+
+window.toggleNuevoCliente = function(prefix) {
+  const val = document.getElementById(prefix + 'ClienteSelect').value;
+  const div = document.getElementById(prefix + 'NuevoClienteDiv');
+  if(val === 'new') div.classList.remove('hidden');
+  else div.classList.add('hidden');
+}
+
 window.openModal = function(id, editId = null){ 
+  llenarSelects();
+
   if(id === 'mOrd') {
     if(editId) {
       const o = D.ordenes.find(x => x.id === editId);
-      const c = D.clientes.find(x => x.id == o.cli);
       document.getElementById('tituloModOrd').textContent = "Editar Orden";
       document.getElementById('editOrdId').value = o.id;
-      document.getElementById('oNom').value = c ? c.nombre : '';
-      document.getElementById('oTel').value = c ? c.tel : '';
+      document.getElementById('oClienteSelect').value = o.cli || '';
+      document.getElementById('oClienteSelect').disabled = true; // No cambiar cliente al editar
+      document.getElementById('oNuevoClienteDiv').classList.add('hidden');
+      
       document.getElementById('oFecha').value = o.fecha;
       document.getElementById('oEq').value = o.equipo;
       document.getElementById('oFalla').value = o.falla;
@@ -405,6 +427,10 @@ window.openModal = function(id, editId = null){
     } else {
       document.getElementById('tituloModOrd').textContent = "Nueva Orden";
       document.getElementById('editOrdId').value = '';
+      document.getElementById('oClienteSelect').disabled = false;
+      document.getElementById('oClienteSelect').value = '';
+      document.getElementById('oNuevoClienteDiv').classList.add('hidden');
+      
       document.getElementById('oFecha').valueAsDate = new Date();
       ['oNom','oTel','oEq','oFalla','oRepuesto','oManoObra','oPrecio','oSena'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('displaySaldo').style.display = 'none';
@@ -414,6 +440,8 @@ window.openModal = function(id, editId = null){
     ['pNom','pTel','pEq','pDet','pMonto','pEnvio','pTotal'].forEach(i => document.getElementById(i).value = '');
   }
   if(id === 'mVent') {
+    document.getElementById('vClienteSelect').value = '';
+    document.getElementById('vNuevoClienteDiv').classList.add('hidden');
     document.getElementById('vFecha').valueAsDate = new Date();
     ['vNom','vTel','vProd','vPrec'].forEach(i => document.getElementById(i).value = '');
   }
@@ -499,15 +527,18 @@ window.addCli = async function() {
 
 window.saveOrd = async function() {
   const id = document.getElementById('editOrdId').value;
-  const nom = document.getElementById('oNom').value.trim();
+  const cliVal = document.getElementById('oClienteSelect').value;
   const eq = document.getElementById('oEq').value.trim();
-  if(!nom || !eq) return alert('El nombre del cliente y el equipo son obligatorios');
+  
+  if(!cliVal || !eq) return alert('Cliente y equipo son obligatorios');
+  
   try {
-    let clienteId = null;
-    let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
-    
-    if(clienteExistente) clienteId = clienteExistente.id;
-    else {
+    let clienteId = cliVal;
+
+    // Si es nuevo cliente, lo creamos primero
+    if(cliVal === 'new') {
+      const nom = document.getElementById('oNom').value.trim();
+      if(!nom) return alert('Escribe el nombre del nuevo cliente');
       const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('oTel').value, uid });
       clienteId = docRef.id;
     }
@@ -550,36 +581,34 @@ window.addPres = async function() {
   closeModal('mPres'); cargarDatos();
 }
 
-// LÓGICA DE GUARDAR VENTA CON CLIENTE AUTOMÁTICO
 window.addVenta = async function() {
-  const nom = document.getElementById('vNom').value.trim();
-  const tel = document.getElementById('vTel').value.trim();
+  const cliVal = document.getElementById('vClienteSelect').value;
   const prod = document.getElementById('vProd').value.trim();
   const prec = parseFloat(document.getElementById('vPrec').value);
   
-  if(!nom || !prod || !prec) return alert('Completa cliente, producto y precio');
+  if(!cliVal || !prod || !prec) return alert('Completa cliente, producto y precio');
   
   try {
-    // 1. Buscar o crear cliente
-    let clienteId = null;
-    let clienteExistente = D.clientes.find(c => c.nombre.toLowerCase() === nom.toLowerCase());
-    
-    if(clienteExistente) {
-      clienteId = clienteExistente.id;
-    } else {
-      const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: tel, uid });
+    let clienteId = cliVal;
+    let nombreCli = '';
+    let telCli = '';
+
+    if(cliVal === 'new') {
+      const nom = document.getElementById('vNom').value.trim();
+      if(!nom) return alert('Escribe el nombre del nuevo cliente');
+      const docRef = await addDoc(collection(db, 'clientes'), { nombre: nom, tel: document.getElementById('vTel').value, uid });
       clienteId = docRef.id;
+      nombreCli = nom;
+      telCli = document.getElementById('vTel').value;
+    } else {
+      const c = D.clientes.find(x => x.id === cliVal);
+      nombreCli = c.nombre;
+      telCli = c.tel;
     }
 
-    // 2. Guardar venta
     await addDoc(collection(db, 'ventas'), { 
-      producto: prod, 
-      precio: prec, 
-      fecha: document.getElementById('vFecha').value, 
-      cli: clienteId,
-      nombreCli: nom,
-      telCli: tel,
-      uid 
+      producto: prod, precio: prec, fecha: document.getElementById('vFecha').value, 
+      cli: clienteId, nombreCli: nombreCli, telCli: telCli, uid 
     });
     
     closeModal('mVent'); cargarDatos();
@@ -614,6 +643,49 @@ window.cambiarEstado = async function(id, nuevoEstado) {
 
 window.wa = function() { if(D.config.tel) window.open('https://wa.me/' + D.config.tel.replace(/\D/g,'')); }
 window.waCli = function(tel) { if(tel) window.open('https://wa.me/' + tel.replace(/\D/g,'')); }
+
+// VER HISTORIAL DEL CLIENTE
+window.verHistorial = function(cliId) {
+  const c = D.clientes.find(x => x.id === cliId);
+  if(!c) return;
+  
+  document.getElementById('tituloHistorial').textContent = "Historial de " + c.nombre;
+  
+  const ords = D.ordenes.filter(o => o.cli === cliId);
+  const vens = D.ventas.filter(v => v.cli === cliId);
+  
+  let html = '';
+  
+  if(ords.length > 0) {
+    html += `<h4 style="color:var(--neon); margin: 10px 0; font-size:14px;">📋 Reparaciones / Órdenes</h4>`;
+    ords.forEach(o => {
+      html += `<div style="background:var(--bg); padding:10px; border-radius:8px; margin-bottom:8px; font-size:13px;">
+        <div style="display:flex; justify-content:space-between; font-weight:bold;">
+          <span>${o.equipo}</span><span style="color:var(--ok)">$${o.costo}</span>
+        </div>
+        <div style="color:var(--sub); font-size:11px; margin-top:4px;">🔧 ${o.falla || '-'} | Estado: ${o.estado.toUpperCase()}</div>
+      </div>`;
+    });
+  }
+  
+  if(vens.length > 0) {
+    html += `<h4 style="color:var(--ok); margin: 15px 0 10px; font-size:14px;">💰 Compras de Accesorios</h4>`;
+    vens.forEach(v => {
+      html += `<div style="background:var(--bg); padding:10px; border-radius:8px; margin-bottom:8px; font-size:13px;">
+        <div style="display:flex; justify-content:space-between; font-weight:bold;">
+          <span>${v.producto}</span><span style="color:var(--ok)">$${v.precio}</span>
+        </div>
+      </div>`;
+    });
+  }
+
+  if(ords.length === 0 && vens.length === 0) {
+    html = '<p style="color:var(--sub); text-align:center; padding:20px;">Este cliente no tiene trabajos ni ventas registradas aún.</p>';
+  }
+
+  document.getElementById('historialContent').innerHTML = html;
+  document.getElementById('mHistorial').classList.add('active');
+}
 
 window.imprimirPDF = function(id) {
   const o = D.ordenes.find(x => x.id === id);
@@ -761,7 +833,135 @@ window.enviarImagen = async function(id) {
   }
 }
 
-// NUEVAS FUNCIONES PARA FACTURA DE VENTA
+window.imprimirPresupuesto = function(id) {
+  const p = D.presupuestos.find(x => x.id === id);
+  if(!p) return;
+  
+  const win = window.open('', '_blank');
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:120px; margin-bottom:10px; border-radius:8px;">` : '';
+  
+  let fechaFormat = p.fecha || '';
+  if(fechaFormat) {
+    const parts = fechaFormat.split('T')[0].split('-');
+    if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
+  win.document.write(`
+    <html><head><title>Presupuesto - ${D.config.local}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; padding: 40px; color: #333; line-height: 1.5; }
+      .header { text-align: center; border-bottom: 3px solid #A855F7; padding-bottom: 20px; margin-bottom: 20px; }
+      .header h1 { color: #111; margin: 10px 0 5px; font-size: 28px; letter-spacing: -0.5px; }
+      .header p { color: #666; font-size: 14px; margin: 2px 0; }
+      .section-title { font-size: 14px; text-transform: uppercase; color: #A855F7; font-weight: 700; margin: 25px 0 10px; letter-spacing: 1px; }
+      .details { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+      .row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0; font-size: 14px; }
+      .row:last-child { border-bottom: none; padding-bottom: 0; }
+      .row strong { color: #111; }
+      .total-section { margin-top: 20px; background: #111; color: #fff; padding: 20px; border-radius: 12px; text-align: right; }
+      .total-section h3 { margin: 0; font-size: 14px; color: #aaa; text-transform: uppercase; }
+      .total-section h2 { margin: 5px 0 0; font-size: 32px; color: #A855F7; }
+      .legal { font-size: 12px; color: #64748b; text-align: center; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+      @media print { button { display: none; } body { padding: 0; } }
+    </style>
+    </head><body>
+      <div class="header">
+        ${logoHtml}
+        <h1>${D.config.local}</h1>
+        <p>📍 ${D.config.dir || 'Dirección no registrada'}</p>
+        <p>📱 WhatsApp: ${D.config.tel || 'Teléfono no registrado'}</p>
+        <h2 style="color:#A855F7; margin-top:15px; font-size:20px;">PRESUPUESTO</h2>
+      </div>
+
+      <div class="section-title">Detalles del Presupuesto</div>
+      <div class="details">
+        <div class="row"><strong>Fecha:</strong> <span>${fechaFormat}</span></div>
+        <div class="row"><strong>Cliente:</strong> <span>${p.nombre}</span></div>
+        <div class="row"><strong>Equipo / Servicio:</strong> <span>${p.equipo}</span></div>
+        <div class="row"><strong>Detalles:</strong> <span>${p.detalles || '-'}</span></div>
+        <div class="row"><strong>Tipo de Entrega:</strong> <span>${p.tipoEnvio}</span></div>
+      </div>
+
+      <div class="total-section">
+        <h3>Total Presupuestado</h3>
+        <h2>$${p.total}</h2>
+        ${p.costoEnvio > 0 ? `<p style="font-size:12px; color:#aaa; margin-top:5px;">(Incluye $${p.costoEnvio} de envío)</p>` : ''}
+      </div>
+
+      <div class="legal">
+        <strong>Este documento es un presupuesto, no un comprobante de pago.</strong><br>
+        Los precios están sujetos a cambios sin previo aviso hasta la aprobación del cliente.
+      </div>
+
+      <div style="text-align:center; margin-top:30px;">
+        <button onclick="window.print()" style="padding:14px 28px; background:#A855F7; color:#000; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Imprimir / Guardar PDF</button>
+      </div>
+    </body></html>
+  `);
+  win.document.close();
+}
+
+window.enviarPresupuestoImg = async function(id) {
+  const p = D.presupuestos.find(x => x.id === id);
+  if(!p) return;
+  
+  let fechaFormat = p.fecha || '';
+  if(fechaFormat) {
+    const parts = fechaFormat.split('T')[0].split('-');
+    if(parts.length === 3) fechaFormat = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
+  const logoHtml = D.config.logo ? `<img src="${D.config.logo}" style="max-width:100px; margin-bottom:10px; border-radius:8px;">` : '';
+  
+  document.getElementById('receiptContent').innerHTML = `
+    <div style="text-align:center; border-bottom: 3px solid #A855F7; padding-bottom: 15px; margin-bottom: 15px;">
+      ${logoHtml}
+      <h1 style="margin:0; font-size:22px; color:#111;">${D.config.local}</h1>
+      <p style="margin:2px 0; font-size:12px; color:#666;">📍 ${D.config.dir || ''}</p>
+      <p style="margin:2px 0; font-size:12px; color:#666;">📱 WhatsApp: ${D.config.tel || ''}</p>
+      <h2 style="color:#A855F7; margin-top:10px; font-size:16px;">PRESUPUESTO</h2>
+    </div>
+    
+    <div style="background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; font-size:13px; color:#333; margin-bottom:15px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Fecha:</strong> <span>${fechaFormat}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Cliente:</strong> <span>${p.nombre}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Equipo/Servicio:</strong> <span>${p.equipo}</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Detalles:</strong> <span>${p.detalles || '-'}</span></div>
+      <div style="display:flex; justify-content:space-between;"><strong>Entrega:</strong> <span>${p.tipoEnvio}</span></div>
+    </div>
+
+    <div style="background:#111; color:#fff; padding:15px; border-radius:10px; text-align:right; margin-bottom:15px;">
+      <div style="font-size:12px; color:#aaa; text-transform:uppercase;">Total Presupuestado</div>
+      <div style="font-size:26px; font-weight:bold; color:#A855F7;">$${p.total}</div>
+      ${p.costoEnvio > 0 ? `<div style="font-size:12px; color:#aaa; margin-top:5px;">Incluye envío: $${p.costoEnvio}</div>` : ''}
+    </div>
+
+    <div style="font-size:9px; color:#666; text-align:justify; border-top:1px solid #e2e8f0; padding-top:10px;">
+      <strong>Nota:</strong> Este es un presupuesto informativo. Los precios están sujetos a cambios hasta la aprobación del cliente.
+    </div>
+  `;
+
+  const element = document.getElementById('receiptTemplate');
+  const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff' });
+  
+  const image = canvas.toDataURL("image/png");
+  const link = document.createElement('a');
+  link.href = image;
+  link.download = `Presupuesto_${p.equipo}_${p.nombre}.png`;
+  link.click();
+
+  if(p.telefono) {
+    const msj = encodeURIComponent(`Hola ${p.nombre}, te envío el presupuesto por ${p.equipo}. ¡Saludos de ${D.config.local}!`);
+    setTimeout(() => {
+      window.open(`https://wa.me/${p.telefono.replace(/\D/g,'')}?text=${msj}`, '_blank');
+    }, 800);
+    alert('¡Imagen descargada! Se abrirá WhatsApp para que adjuntes la imagen.');
+  } else {
+    alert('Imagen descargada. (No guardaste un teléfono para este cliente, así que no se abrió WhatsApp).');
+  }
+}
+
 window.imprimirFacturaVenta = function(id) {
   const v = D.ventas.find(x => x.id === id);
   if(!v) return;
@@ -911,18 +1111,20 @@ function render() {
   });
   document.getElementById('sGanancia').textContent = '$' + gananciaTotal;
 
-  document.getElementById('listaClientes').innerHTML = D.clientes.map(c => `<option value="${c.nombre}">`).join('');
-
   let h = ''; D.ordenes.slice(-3).reverse().forEach(o => {
     h += `<div class="card"><div class="card-head"><span class="card-title">${o.equipo}</span><span class="badge bg-${o.estado}">${o.estado}</span></div><div style="font-size:13px;color:var(--sub)">💵 $${o.costo}</div></div>`;
   });
   document.getElementById('listHome').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay movimientos</p>';
   
+  // RENDER CLIENTES CON BOTÓN HISTORIAL
   h = ''; D.clientes.forEach(c => {
     h += `<div class="card">
       <div class="card-head"><span class="card-title">${c.nombre}</span></div>
-      <div style="font-size:13px;color:var(--sub);margin-bottom:12px;">📞 ${c.tel}</div>
-      ${c.tel ? `<button class="btn-wa" onclick="waCli('${c.tel}')">💬 Enviar WhatsApp</button>` : ''}
+      <div style="font-size:13px;color:var(--sub);margin-bottom:12px;">📞 ${c.tel || 'Sin teléfono'}</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-edit" onclick="verHistorial('${c.id}')">📋 Historial</button>
+        ${c.tel ? `<button class="btn-wa" onclick="waCli('${c.tel}')">💬 WhatsApp</button>` : ''}
+      </div>
     </div>`;
   });
   document.getElementById('listCli').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay clientes</p>';
@@ -989,7 +1191,6 @@ function render() {
   });
   document.getElementById('listPres').innerHTML = h || '<p style="color:var(--sub);padding:0 16px;">No hay presupuestos</p>';
   
-  // RENDER VENTAS CON CLIENTE Y BOTONES
   let totalV = 0;
   h = ''; D.ventas.forEach(v => {
     totalV += v.precio;
